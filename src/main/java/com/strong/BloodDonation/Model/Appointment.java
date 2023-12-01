@@ -14,6 +14,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,8 +29,9 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer appointmentId;
-    
-    @Column(nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "donarId", nullable = false)
     private Donor donor;
 
     @Column(nullable = false)
@@ -44,4 +47,28 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppointmentStatus status;
+
+    /* SERICE LAYER */
+    /*
+     * public void createAppointment(Appointment appointment) {
+     * validateTimeRange(appointment.getAppointmentTime());
+     * // Other business logic
+     * // Save the appointment to the database
+     * }
+     * 
+     * private void validateTimeRange(LocalTime appointmentTime) {
+     * // Implement your time range validation logic here
+     * if (!isWithinBusinessHours(appointmentTime)) {
+     * throw new
+     * IllegalArgumentException("Appointment time must be within business hours.");
+     * }
+     * }
+     * 
+     * private boolean isWithinBusinessHours(LocalTime appointmentTime) {
+     * LocalTime businessStart = LocalTime.of(9, 0, 0);
+     * LocalTime businessEnd = LocalTime.of(17, 0, 0);
+     * return !appointmentTime.isBefore(businessStart) &&
+     * !appointmentTime.isAfter(businessEnd);
+     * }
+     */
 }
