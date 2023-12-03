@@ -1,6 +1,5 @@
 package com.strong.BloodDonation.Service;
 
-import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,10 @@ public class AppointService {
 
     public Appointment findById(Integer id) {
         return appointRepo.findById(id).get();
+    }
+
+    public Appointment findAll(){
+        return appointRepo.findAll().get(0);
     }
 
   /*   public Appointment findByName(Date dateTime) {

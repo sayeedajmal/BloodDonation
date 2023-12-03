@@ -1,6 +1,5 @@
 package com.strong.BloodDonation.Repository;
 
-import java.sql.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
