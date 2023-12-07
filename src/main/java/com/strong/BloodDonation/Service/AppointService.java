@@ -1,6 +1,8 @@
 package com.strong.BloodDonation.Service;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +23,8 @@ public class AppointService {
         return appointRepo.findById(id).get();
     }
 
-    public Appointment findAll(){
-        return appointRepo.findAll().get(0);
+    public List<Appointment> findAll(){
+        return appointRepo.findAll();
     }
 
   /*   public Appointment findByName(Date dateTime) {

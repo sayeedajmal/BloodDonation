@@ -17,8 +17,8 @@ public class DonorService {
     private DonorRepo donorRepo;
 
     public void saveDonor(@RequestBody Donor donor) throws BloodException {
-        Donor findByFullName = findByFullName(donor.getFirstName(), donor.getLastName());
-        if (findByFullName == null) {
+        Integer findByFullName = findByFullName(donor.getFirstName(), donor.getLastName());
+        if (findByFullName == 0) {
             donorRepo.save(donor);
         } else {
             throw new BloodException("Already Donor Created");
@@ -33,12 +33,12 @@ public class DonorService {
             throw new BloodException("can't find Donor By this Id: " + donor.getDonarId(), new Throwable());
     }
 
-    public Donor findByFullName(String firstName, String lastName) throws BloodException {
+    public Integer findByFullName(String firstName, String lastName) throws BloodException {
         Donor fullName = donorRepo.findByFirstNameAndLastName(firstName, lastName);
         if (fullName != null) {
-            return fullName;
+            return fullName.getDonarId();
         } else
-            throw new BloodException("Cant Find By First and Last Name", new Throwable());
+            return 0;
     }
 
     public List<Donor> findAll() throws BloodException {
