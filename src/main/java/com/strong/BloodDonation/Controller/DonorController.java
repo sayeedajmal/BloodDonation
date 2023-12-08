@@ -55,7 +55,7 @@ public class DonorController {
     /* Update Donor */
     @PutMapping("updateDonor")
     public ResponseEntity<String> UpdateProduct(@RequestBody Donor updatedDonor) throws BloodException {
-        Donor existingDonor = donorService.findById(updatedDonor.getDonarId());
+        Donor existingDonor = donorService.findById(updatedDonor.getDonorId());
         if (existingDonor != null) {
             existingDonor.setFirstName(updatedDonor.getFirstName());
             existingDonor.setLastName(updatedDonor.getLastName());

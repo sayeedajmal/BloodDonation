@@ -35,7 +35,7 @@ public class DonorService {
     public Integer findByFullName(String firstName, String lastName) throws BloodException {
         Donor fullName = donorRepo.findByFirstNameAndLastName(firstName, lastName);
         if (fullName != null) {
-            return fullName.getDonarId();
+            return fullName.getDonorId();
         } else
             return 0;
     }
@@ -58,10 +58,10 @@ public class DonorService {
     }
 
     public Donor updateDonor(Donor updatedDonor) throws BloodException {
-        if (updatedDonor.getDonarId() != null) {
+        if (updatedDonor.getDonorId() != null) {
             return donorRepo.save(updatedDonor);
         } else
-            throw new BloodException("can't find Donor By this Id: " + updatedDonor.getDonarId(), new Throwable());
+            throw new BloodException("can't find Donor By this Id: " + updatedDonor.getDonorId(), new Throwable());
     }
 
 }

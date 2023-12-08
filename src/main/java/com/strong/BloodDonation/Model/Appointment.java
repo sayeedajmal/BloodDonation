@@ -7,6 +7,7 @@ import org.hibernate.annotations.Check;
 
 import com.strong.BloodDonation.Utils.AppointmentStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,8 +31,8 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer appointmentId;
 
-    @ManyToOne
-    @JoinColumn(name = "donarId", nullable = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "donorId", nullable = false)
     private Donor donor;
 
     @Column(nullable = false)
@@ -48,27 +49,4 @@ public class Appointment {
     @Column(nullable = false)
     private AppointmentStatus status;
 
-    /* SERICE LAYER */
-    /*
-     * public void createAppointment(Appointment appointment) {
-     * validateTimeRange(appointment.getAppointmentTime());
-     * // Other business logic
-     * // Save the appointment to the database
-     * }
-     * 
-     * private void validateTimeRange(LocalTime appointmentTime) {
-     * // Implement your time range validation logic here
-     * if (!isWithinBusinessHours(appointmentTime)) {
-     * throw new
-     * IllegalArgumentException("Appointment time must be within business hours.");
-     * }
-     * }
-     * 
-     * private boolean isWithinBusinessHours(LocalTime appointmentTime) {
-     * LocalTime businessStart = LocalTime.of(9, 0, 0);
-     * LocalTime businessEnd = LocalTime.of(17, 0, 0);
-     * return !appointmentTime.isBefore(businessStart) &&
-     * !appointmentTime.isAfter(businessEnd);
-     * }
-     */
 }

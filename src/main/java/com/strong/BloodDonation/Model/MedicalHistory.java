@@ -22,7 +22,7 @@ public class MedicalHistory {
     private Integer historyId;
     
     @ManyToOne
-    @JoinColumn(name = "donarId", nullable = false)
+    @JoinColumn(name = "donorId", nullable = false)
     private Donor donor;
 
     @Size(max = 255)

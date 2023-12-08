@@ -24,7 +24,7 @@ public class Donor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer donarId;
+    private Integer donorId;
 
     @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL)
     private List<MedicalHistory> medicalHistoryList = new ArrayList<>();

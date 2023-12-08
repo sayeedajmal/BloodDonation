@@ -1,6 +1,5 @@
 package com.strong.BloodDonation.Controller;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.strong.BloodDonation.Model.Appointment;
 import com.strong.BloodDonation.Service.AppointService;
+import com.strong.BloodDonation.Utils.BloodException;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
@@ -35,25 +35,21 @@ public class AppointController {
 
     /* Show Appointment */
     @GetMapping("showAppointment")
-    public ResponseEntity<List<Appointment>> showAppointment() {
+    public ResponseEntity<List<Appointment>> showAppointment() throws BloodException {
         List<Appointment> findAll = appointService.findAll();
-        if (findAll.isEmpty()) {
-            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(findAll, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(findAll, HttpStatus.OK);
     }
 
     /* FindById Appointment */
     @GetMapping("{id}")
-    public ResponseEntity<Appointment> showByIdAppointment(@PathVariable Integer id) {
+    public ResponseEntity<Appointment> showByIdAppointment(@PathVariable Integer id) throws BloodException {
         Appointment appointment = appointService.findById(id);
         return new ResponseEntity<Appointment>(appointment, HttpStatus.OK);
     }
 
     /* Delete Appointment */
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteAppointment(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteAppointment(@PathVariable Integer id) throws BloodException {
         appointService.deleteAppointment(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -61,7 +57,7 @@ public class AppointController {
     /* Update Appointment */
     @PutMapping("updateAppointment")
     public ResponseEntity<String> updateProduct(@RequestBody Appointment updatedAppointment,
-            @RequestParam("id") Integer id) {
+            @RequestParam("id") Integer id) throws BloodException {
         Appointment existAppoint = appointService.findById(id);
         if (existAppoint != null) {
             existAppoint.setAppointmentDate(updatedAppointment.getAppointmentDate());

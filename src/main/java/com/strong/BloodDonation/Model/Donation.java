@@ -27,7 +27,7 @@ public class Donation {
     private Integer donationId;
 
     @ManyToOne
-    @JoinColumn(name = "donarId", nullable = false)
+    @JoinColumn(name = "donorId", nullable = false)
     private Donor donor;
 
     @Column(nullable = false)
