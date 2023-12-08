@@ -1,5 +1,8 @@
 package com.strong.BloodDonation.Controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,33 +30,37 @@ public class AppointController {
     @PostMapping("createAppointment")
     public ResponseEntity<String> createAppointment(@RequestBody Appointment appointment) {
         appointService.saveAppointment(appointment);
-        return new ResponseEntity<String>("Created Sucessfully", HttpStatus.CREATED);
+        return new ResponseEntity<String>("Created Successfully", HttpStatus.CREATED);
     }
 
     /* Show Appointment */
-    @GetMapping("createAppointment")
-    public ResponseEntity<Appointment> showAppointment() {
-        Appointment findAll = appointService.findAll();
-        return new ResponseEntity<Appointment>(findAll, HttpStatus.OK);
+    @GetMapping("showAppointment")
+    public ResponseEntity<List<Appointment>> showAppointment() {
+        List<Appointment> findAll = appointService.findAll();
+        if (findAll.isEmpty()) {
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(findAll, HttpStatus.OK);
+        }
     }
 
     /* FindById Appointment */
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Appointment> showByIdAppointment(@PathVariable Integer id) {
         Appointment appointment = appointService.findById(id);
         return new ResponseEntity<Appointment>(appointment, HttpStatus.OK);
     }
 
     /* Delete Appointment */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Integer id) {
         appointService.deleteAppointment(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /* Update Appointment */
-    @PutMapping("/UpdateAppointment")
-    public String UpdateProduct(@RequestBody Appointment updatedAppointment,
+    @PutMapping("updateAppointment")
+    public ResponseEntity<String> updateProduct(@RequestBody Appointment updatedAppointment,
             @RequestParam("id") Integer id) {
         Appointment existAppoint = appointService.findById(id);
         if (existAppoint != null) {
@@ -65,7 +72,7 @@ public class AppointController {
 
             appointService.updateAppointment(existAppoint);
         }
-        return "redirect:/manage/ShowCategories";
+        return new ResponseEntity<>("Sucessfully Updated", HttpStatus.ACCEPTED);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.strong.BloodDonation.Service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +25,11 @@ public class DonorService {
     }
 
     public Donor findById(Integer id) throws BloodException {
-        Donor donor = donorRepo.findAll().get(0);
-        if (donor.getDonarId() != null) {
+        Donor donor = donorRepo.findById(id).orElse(null);
+        if (donor != null) {
             return donor;
         } else
-            throw new BloodException("can't find Donor By this Id: " + donor.getDonarId(), new Throwable());
+            throw new BloodException("can't find Donor By this Id: " + id, new Throwable());
     }
 
     public Integer findByFullName(String firstName, String lastName) throws BloodException {
@@ -50,11 +49,11 @@ public class DonorService {
     }
 
     public void deleteDonor(Integer id) throws BloodException {
-        Donor findById = findById(id);
-        if (findById.getDonarId() != null) {
-            donorRepo.delete(findById);
+        Donor donor = findById(id);
+        if (donor != null) {
+            donorRepo.delete(donor);
         } else
-            throw new BloodException("can't find Donor By this Id: " + findById.getDonarId(), new Throwable());
+            throw new BloodException("can't find Donor By this Id: " + id, new Throwable());
 
     }
 

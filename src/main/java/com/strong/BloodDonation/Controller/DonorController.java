@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.strong.BloodDonation.Model.Donor;
@@ -34,31 +33,29 @@ public class DonorController {
     }
 
     /* Show Donor */
-    @GetMapping("createDonor")
+    @GetMapping("showDonor")
     public ResponseEntity<List<Donor>> showDonor() throws BloodException {
         List<Donor> findAll = donorService.findAll();
         return new ResponseEntity<List<Donor>>(findAll, HttpStatus.OK);
     }
 
     /* FindById Donor */
-    @GetMapping("/{id}")
-    public ResponseEntity<Donor> showByIdDonor(@PathVariable Integer id) throws BloodException {
-        Donor donor = donorService.findById(id);
-        return new ResponseEntity<Donor>(donor, HttpStatus.OK);
+    @GetMapping("{id}")
+    public ResponseEntity<Donor> showByIdDonor(@PathVariable("id") Integer id) throws BloodException {
+        return new ResponseEntity<Donor>(donorService.findById(id), HttpStatus.OK);
     }
 
     /* Delete Donor */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDonor(@PathVariable Integer id) throws BloodException {
+    public ResponseEntity<String> deleteDonor(@PathVariable Integer id) throws BloodException {
         donorService.deleteDonor(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Deleted Sucessfully", HttpStatus.NO_CONTENT);
     }
 
     /* Update Donor */
-    @PutMapping("/UpdateDonor")
-    public String UpdateProduct(@RequestBody Donor updatedDonor,
-            @RequestParam("id") Integer id) throws BloodException {
-        Donor existingDonor = donorService.findById(id);
+    @PutMapping("updateDonor")
+    public ResponseEntity<String> UpdateProduct(@RequestBody Donor updatedDonor) throws BloodException {
+        Donor existingDonor = donorService.findById(updatedDonor.getDonarId());
         if (existingDonor != null) {
             existingDonor.setFirstName(updatedDonor.getFirstName());
             existingDonor.setLastName(updatedDonor.getLastName());
@@ -71,8 +68,9 @@ public class DonorController {
             existingDonor.setMedicalHistoryList(updatedDonor.getMedicalHistoryList());
 
             donorService.updateDonor(existingDonor);
+            return new ResponseEntity<>("Updated Successfully.", HttpStatus.OK);
         }
-        return "redirect:/manage/ShowCategories";
+        return new ResponseEntity<>("Something Wrong", HttpStatus.FORBIDDEN);
     }
 
 }
