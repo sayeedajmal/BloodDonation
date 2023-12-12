@@ -3,7 +3,6 @@ package com.strong.BloodDonation.Service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Repository.DonorRepo;
@@ -15,12 +14,15 @@ public class DonorService {
     @Autowired
     private DonorRepo donorRepo;
 
-    public void saveDonor(@RequestBody Donor donor) throws BloodException {
-        Integer findByFullName = findByFullName(donor.getFirstName(), donor.getLastName());
-        if (findByFullName == 0) {
+    public void saveDonor(Donor donor) throws BloodException {
+        if (donor == null || donor.getFirstName() == null || donor.getLastName() == null) {
+            throw new BloodException("Invalid donor data");
+        }
+        Integer existingDonorId = findByFullName(donor.getFirstName(), donor.getLastName());
+        if (existingDonorId == null) {
             donorRepo.save(donor);
         } else {
-            throw new BloodException("Already Donor Created");
+            throw new BloodException("Donor with the same name already exists");
         }
     }
 
@@ -32,12 +34,9 @@ public class DonorService {
             throw new BloodException("can't find Donor By this Id: " + id, new Throwable());
     }
 
-    public Integer findByFullName(String firstName, String lastName) throws BloodException {
+    public Integer findByFullName(String firstName, String lastName) {
         Donor fullName = donorRepo.findByFirstNameAndLastName(firstName, lastName);
-        if (fullName != null) {
-            return fullName.getDonorId();
-        } else
-            return 0;
+        return (fullName != null) ? fullName.getDonorId() : null;
     }
 
     public List<Donor> findAll() throws BloodException {
@@ -51,17 +50,25 @@ public class DonorService {
     public void deleteDonor(Integer id) throws BloodException {
         Donor donor = findById(id);
         if (donor != null) {
-            donorRepo.delete(donor);
+            try {
+                donorRepo.delete(donor);
+            } catch (Exception e) {
+                throw new BloodException("Error deleting Donor : " + e.getLocalizedMessage());
+            }
         } else
             throw new BloodException("can't find Donor By this Id: " + id, new Throwable());
 
     }
 
-    public Donor updateDonor(Donor updatedDonor) throws BloodException {
+    public void updateDonor(Donor updatedDonor) throws BloodException {
         if (updatedDonor.getDonorId() != null) {
-            return donorRepo.save(updatedDonor);
+            try {
+                donorRepo.save(updatedDonor);
+            } catch (Exception e) {
+                throw new BloodException("Error updating Donor : " + e.getLocalizedMessage());
+            }
         } else
-            throw new BloodException("can't find Donor By this Id: " + updatedDonor.getDonorId(), new Throwable());
+            throw new BloodException("Invalid Donor Id " + updatedDonor.getDonorId(), new Throwable());
     }
 
 }

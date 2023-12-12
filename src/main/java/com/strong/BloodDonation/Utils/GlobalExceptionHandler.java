@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BloodException.class)
-    public ResponseEntity<BloodResponse> handleBloodException(BloodException exception) {
+    public ResponseEntity<?> handleBloodException(BloodException exception) {
         BloodResponse response = new BloodResponse();
         response.setMessage(exception.getLocalizedMessage());
         response.setStatus(HttpStatus.CONFLICT.value());

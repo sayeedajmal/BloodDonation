@@ -16,39 +16,52 @@ public class appointmentService {
     @Autowired
     private AppointRepo appointRepo;
 
-    public void saveAppointment(Appointment appointment) {
+    public void saveAppointment(Appointment appointment) throws BloodException {
         if (!isWithinBusinessHours(appointment.getAppointmentTime())) {
             throw new IllegalArgumentException("Appointment time must be within business hours.");
-        } else
+        }
+        try {
             appointRepo.save(appointment);
+        } catch (Exception e) {
+            throw new BloodException("Error saving appointment", e);
+        }
     }
 
     public Appointment findById(Integer id) throws BloodException {
-        Appointment byId = appointRepo.findById(id).orElse(null);
-        if (byId != null) {
-            return byId;
-        } else
-            throw new BloodException("Can't Find Appointment with " + id + " Appointment ID");
-
+        return appointRepo.findById(id)
+                .orElseThrow(() -> new BloodException("Can't Find Appointment with " + id + " Appointment ID"));
     }
 
     public List<Appointment> findAll() throws BloodException {
         List<Appointment> findAll = appointRepo.findAll();
         if (findAll.isEmpty()) {
             throw new BloodException("There isn't Any Appointment List");
-        } else
-            return findAll;
+        }
+        return findAll;
     }
 
     public void deleteAppointment(Integer appointId) throws BloodException {
         Appointment findById = findById(appointId);
-        appointRepo.delete(findById);
+        try {
+            appointRepo.delete(findById);
+        } catch (Exception e) {
+            throw new BloodException("Error deleting appointment", e);
+        }
     }
 
-    /* Timing For AppointMents */
-    public void updateAppointment(Appointment appointment) {
+    /* ====================LOGIC Timing For Appointments====================== */
+    public void updateAppointment(Appointment appointment) throws BloodException {
         if (appointment.getAppointmentId() != null) {
-            appointRepo.save(appointment);
+            if (appointment.getAppointmentTime() == null) {
+                throw new IllegalArgumentException("Invalid appointment data");
+            }
+            try {
+                appointRepo.save(appointment);
+            } catch (Exception e) {
+                throw new BloodException("Error updating appointment", e);
+            }
+        } else {
+            throw new BloodException("Invalid Appointment ID: " + appointment.getAppointmentId());
         }
     }
 
@@ -58,5 +71,4 @@ public class appointmentService {
         return !appointmentTime.isBefore(businessStart) &&
                 !appointmentTime.isAfter(businessEnd);
     }
-
 }

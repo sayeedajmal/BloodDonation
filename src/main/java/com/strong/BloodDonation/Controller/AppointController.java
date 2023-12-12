@@ -22,6 +22,8 @@ import com.strong.BloodDonation.Service.appointmentService;
 import com.strong.BloodDonation.Service.DonorService;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import jakarta.transaction.Transactional;
+
 @RestController
 @RequestMapping("/api/v1/appointment")
 public class AppointController {
@@ -59,6 +61,7 @@ public class AppointController {
     }
 
     /* Delete Appointment */
+    @Transactional
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteAppointment(@PathVariable Integer id) throws BloodException {
         appointService.deleteAppointment(id);
@@ -66,6 +69,7 @@ public class AppointController {
     }
 
     /* Update Appointment */
+    @Transactional
     @PatchMapping("updateAppointment")
     public ResponseEntity<?> updateProduct(@RequestBody Appointment updatedAppointment,
             @RequestParam("id") Integer id) throws BloodException {
