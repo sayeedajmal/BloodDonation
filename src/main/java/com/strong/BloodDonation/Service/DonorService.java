@@ -41,7 +41,7 @@ public class DonorService {
 
     public List<Donor> findAll() throws BloodException {
         List<Donor> donor = donorRepo.findAll();
-        if (!donor.isEmpty()) {
+        if (donor.size()!=0) {
             return donor;
         } else
             throw new BloodException("There isn't Any Donor right Now..");

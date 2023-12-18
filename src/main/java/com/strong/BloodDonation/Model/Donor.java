@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,6 +29,7 @@ public class Donor {
     private Integer donorId;
 
     @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<MedicalHistory> medicalHistoryList = new ArrayList<>();
 
     @Column(nullable = false)

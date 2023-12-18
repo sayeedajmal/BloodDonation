@@ -4,7 +4,6 @@
 sudo apt-get install mysql*
 
 # Start MySQL service
-sudo service mysql start
 
 # Log in to MySQL as root and create a user and database
 sudo mysql <<EOF

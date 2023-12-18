@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class MedicalHistory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer historyId;
     
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "donorId", nullable = false)
     private Donor donor;
 
