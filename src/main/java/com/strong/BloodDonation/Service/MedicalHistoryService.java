@@ -18,17 +18,30 @@ public class MedicalHistoryService {
     public void saveHistory(MedicalHistory medicalHistory) throws BloodException {
         if (medicalHistory == null || medicalHistory.getDonor().getFirstName() == null
                 || medicalHistory.getMedicalCondition() == null) {
-            throw new BloodException("Invalid medical history data");
-        }
-        try {
-            medicalHisRepo.save(medicalHistory);
-        } catch (Exception e) {
-            throw new BloodException("Error saving medical history", e);
-        }
+            throw new IllegalArgumentException("Invalid medical history data");
+        } else
+            try {
+                medicalHisRepo.save(medicalHistory);
+            } catch (Exception e) {
+                throw new BloodException("Duplicate Data...");
+            }
     }
 
-    public MedicalHistory findById(Integer id) {
-        return medicalHisRepo.findById(id).orElse(null);
+    public MedicalHistory findById(Integer id) throws BloodException {
+        MedicalHistory history = medicalHisRepo.findById(id).orElse(null);
+        if (history != null) {
+            return history;
+        } else
+            throw new BloodException("History Not Avaliable With This " + id + " ID");
+
+    }
+
+    public MedicalHistory findByDonorId(Integer donorId) throws BloodException {
+        MedicalHistory byDonorId = medicalHisRepo.findByDonorId(donorId);
+        if (byDonorId != null) {
+            return byDonorId;
+        } else
+            throw new BloodException("History Not Available With This Donor " + donorId + " ID");
     }
 
     public List<MedicalHistory> findAll() {

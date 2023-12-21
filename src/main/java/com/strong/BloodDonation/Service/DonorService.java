@@ -16,7 +16,7 @@ public class DonorService {
 
     public void saveDonor(Donor donor) throws BloodException {
         if (donor == null || donor.getFirstName() == null || donor.getLastName() == null) {
-            throw new BloodException("Invalid donor data");
+            throw new BloodException("Fill All Fields Correctly");
         }
         Integer existingDonorId = findByFullName(donor.getFirstName(), donor.getLastName());
         if (existingDonorId == null) {
@@ -41,7 +41,7 @@ public class DonorService {
 
     public List<Donor> findAll() throws BloodException {
         List<Donor> donor = donorRepo.findAll();
-        if (donor.size()!=0) {
+        if (donor.size() != 0) {
             return donor;
         } else
             throw new BloodException("There isn't Any Donor right Now..");

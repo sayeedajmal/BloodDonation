@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medical History</title>
+</head>
+
+<body>
+    <form action="http://localhost:8080/api/v1/medicalHistory/createHistory" method="post" style="
+        font-size: 2.5rem;
+        text-align: center;
+        align-items: center;
+        align-content: center;">
+
+        <input type="hidden" name="donorId" value="152" />
+
+        <input type="text" placeholder="medicalCondition" name="medicalCondition" /><br />
+        <input type="text" placeholder="medications" name="medications" /><br />
+        <input type="text" placeholder="allergies" name="allergies" /><br />
+
+        <button type="reset">Clear</button>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+<style>
+    input {
+        font-size: 1.5rem;
+    }
+</style>
+
+</html>

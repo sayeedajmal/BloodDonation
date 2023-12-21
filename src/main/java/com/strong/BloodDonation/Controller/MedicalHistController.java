@@ -1,6 +1,5 @@
 package com.strong.BloodDonation.Controller;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +35,16 @@ public class MedicalHistController {
 
     /* Create History */
     @PostMapping("createHistory")
-    public ResponseEntity<?> createHistroy(@ModelAttribute MedicalHistory medicalHistory,
-            @PathVariable("donorId") Integer donorId)
-            throws BloodException {
+    public ResponseEntity<String> createHistory(@ModelAttribute MedicalHistory medicalHistory,
+            @RequestParam("donorId") Integer donorId) throws BloodException {
         Donor donor = donorService.findById(donorId);
         if (donor != null) {
             medicalHistory.setDonor(donor);
             medicalHistoryService.saveHistory(medicalHistory);
-            return new ResponseEntity<String>("Created Successfully", HttpStatus.CREATED);
-        } else
-            throw new BloodException("Can't Find Donor with " + donorId + " ID.");
+            return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
+        } else {
+            throw new BloodException("Can't Find Donor with ID: " + donorId);
+        }
     }
 
     /* Show History */
@@ -53,15 +52,21 @@ public class MedicalHistController {
     public ResponseEntity<?> showHistory() {
         List<MedicalHistory> findAll = medicalHistoryService.findAll();
         if (findAll.isEmpty()) {
-            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Empty History", HttpStatus.NOT_FOUND);
         } else
             return new ResponseEntity<List<MedicalHistory>>(findAll, HttpStatus.OK);
     }
 
     /* FindByID History */
     @GetMapping("{historyId}")
-    public ResponseEntity<?> showByIdHistroy(@PathVariable("historyId") Integer historyId) {
+    public ResponseEntity<?> showByIdHistroy(@PathVariable("historyId") Integer historyId) throws BloodException {
         MedicalHistory history = medicalHistoryService.findById(historyId);
+        return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
+    }
+
+    @GetMapping("findByDonor/{donorId}")
+    public ResponseEntity<?> findByDonorId(@PathVariable("donorId") Integer donorId) throws BloodException {
+        MedicalHistory history = medicalHistoryService.findByDonorId(donorId);
         return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
     }
 
@@ -70,14 +75,14 @@ public class MedicalHistController {
     @DeleteMapping("{historyId}")
     public ResponseEntity<?> deleteHistroy(@PathVariable("historyId") Integer historyId) throws BloodException {
         medicalHistoryService.deleteHistory(historyId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Deleted", HttpStatus.NOT_FOUND);
     }
 
     @Transactional
     @PatchMapping("updateHistory")
-    public ResponseEntity<?> updateHistory(@RequestBody MedicalHistory history, @RequestParam("id") Integer id)
+    public ResponseEntity<?> updateHistory(@RequestBody MedicalHistory history)
             throws BloodException {
-        MedicalHistory Existhistory = medicalHistoryService.findById(id);
+        MedicalHistory Existhistory = medicalHistoryService.findById(history.getHistoryId());
         if (Existhistory != null) {
             Existhistory.setAllergies(history.getAllergies());
             Existhistory.setMedicalCondition(history.getMedicalCondition());

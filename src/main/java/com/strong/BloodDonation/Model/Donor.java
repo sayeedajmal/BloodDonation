@@ -54,6 +54,6 @@ public class Donor {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date lastDonationDate;
 }
