@@ -30,7 +30,7 @@ public class Staff {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String position;
 
     @Column(nullable = false)
