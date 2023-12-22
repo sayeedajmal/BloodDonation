@@ -11,7 +11,7 @@ import com.strong.BloodDonation.Repository.AppointRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
 @Service
-public class appointmentService {
+public class AppointmentService {
 
     @Autowired
     private AppointRepo appointRepo;

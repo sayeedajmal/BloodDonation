@@ -21,46 +21,76 @@ import com.strong.BloodDonation.Utils.BloodException;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * StaffController class handles HTTP requests related to staff operations.
+ * This controller uses the @RestController annotation to indicate that it's a
+ * controller and automatically serializes the returned objects into JSON
+ * format.
+ */
 @RestController
-@RequestMapping("/api/v1/Staff")
+@RequestMapping("/api/v1/staff")
 public class StaffController {
 
     @Autowired
     private StaffService staffService;
 
-    /* Create Staff */
+    /**
+     * POST endpoint to create a new staff member.
+     *
+     * @param staff The staff object to be created.
+     * @return A response indicating the success or failure of the operation.
+     */
     @PostMapping("createStaff")
-    public ResponseEntity<?> createStaff(Staff staff) throws BloodException {
+    public ResponseEntity<?> createStaff(@RequestBody Staff staff) throws BloodException {
         staffService.createStaff(staff);
-        return new ResponseEntity<String>("Created Sucessfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
     }
 
-    /* Show Staff */
+    /**
+     * GET endpoint to retrieve a list of all staff members.
+     *
+     * @return A list of staff members in JSON format.
+     */
     @GetMapping("showStaff")
     public ResponseEntity<?> showStaff() {
         List<Staff> findAll = staffService.findAll();
-        return new ResponseEntity<List<Staff>>(findAll, HttpStatus.OK);
+        return new ResponseEntity<>(findAll, HttpStatus.OK);
     }
 
-    /* FindById Staff */
+    /**
+     * GET endpoint to retrieve a specific staff member by ID.
+     *
+     * @param staffId The unique identifier of the staff member.
+     * @return The requested staff member in JSON format.
+     */
     @GetMapping("{staffId}")
-    public ResponseEntity<?> showByIdStaff(@PathVariable("staffId") Integer staffId) throws BloodException {
+    public ResponseEntity<Staff> showByIdStaff(@PathVariable("staffId") Integer staffId) throws BloodException {
         Staff byId = staffService.findById(staffId);
-        return new ResponseEntity<Staff>(byId, HttpStatus.OK);
+        return new ResponseEntity<>(byId, HttpStatus.OK);
     }
 
-    /* Delete Staff */
+    /**
+     * DELETE endpoint to delete a staff member by ID.
+     *
+     * @param staffId The unique identifier of the staff member to be deleted.
+     * @return A response indicating the success or failure of the operation.
+     */
     @Transactional
     @DeleteMapping("/{staffId}")
-    public ResponseEntity<?> deleteStaff(@PathVariable Integer staffId) throws BloodException {
+    public ResponseEntity<String> deleteStaff(@PathVariable Integer staffId) throws BloodException {
         staffService.deleteStaff(staffId);
-        return new ResponseEntity<>("Deleted Sucessfully", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
     }
 
-    /* Update Staff */
+    /**
+     * PATCH endpoint to update an existing staff member.
+     *
+     * @param updatedStaff The updated staff member object.
+     * @return A response indicating the success or failure of the operation.
+     */
     @Transactional
     @PatchMapping("updateStaff")
-    public ResponseEntity<?> updateStaff(@RequestBody Staff updatedStaff) throws BloodException {
+    public ResponseEntity<String> updateStaff(@RequestBody Staff updatedStaff) throws BloodException {
         Staff existingStaff = staffService.findById(updatedStaff.getStaffId());
         if (existingStaff != null) {
             existingStaff.setFirstName(updatedStaff.getFirstName());
@@ -72,9 +102,9 @@ public class StaffController {
             existingStaff.setPosition(updatedStaff.getPosition());
             existingStaff.setUpdatedAt(LocalDateTime.now());
 
-            staffService.updateStaff(updatedStaff);
-            return new ResponseEntity<>("Updated Successfully.", HttpStatus.OK);
+            staffService.updateStaff(existingStaff);
+            return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Something Wrong", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>("Staff member not found", HttpStatus.NOT_FOUND);
     }
 }

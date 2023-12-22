@@ -18,62 +18,102 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.strong.BloodDonation.Model.Appointment;
 import com.strong.BloodDonation.Model.Donor;
-import com.strong.BloodDonation.Service.appointmentService;
+import com.strong.BloodDonation.Service.AppointmentService;
 import com.strong.BloodDonation.Service.DonorService;
 import com.strong.BloodDonation.Utils.BloodException;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * AppointController class handles HTTP requests related to appointment
+ * operations.
+ * This controller uses the @RestController annotation to indicate that it's a
+ * controller
+ * and automatically serializes the returned objects into JSON format.
+ */
 @RestController
 @RequestMapping("/api/v1/appointment")
 public class AppointController {
 
     @Autowired
-    private appointmentService appointService;
+    private AppointmentService appointService;
+
     @Autowired
     private DonorService donorService;
 
-    /* Create Appointment */
+    /**
+     * `
+     * POST endpoint to create a new appointment.
+     *
+     * @param appointment The appointment object to be created.
+     * @param donorId     The unique identifier of the donor associated with the
+     *                    appointment.
+     * @return A response indicating the success or failure of the operation.
+     */
     @PostMapping("createAppointment")
-    public ResponseEntity<?> createAppointment(@ModelAttribute Appointment appointment,
+    public ResponseEntity<String> createAppointment(@ModelAttribute Appointment appointment,
             @RequestParam Integer donorId) throws BloodException {
         Donor donor = donorService.findById(donorId);
         if (donor != null) {
             appointment.setDonor(donor);
             appointService.saveAppointment(appointment);
-            return new ResponseEntity<String>("Created Successfully", HttpStatus.CREATED);
-        } else
-            throw new BloodException("Can't Find Donor with " + donorId + " ID.");
+            return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
+        } else {
+            throw new BloodException("Can't Find Donor with ID: " + donorId);
+        }
     }
 
-    /* Show Appointment */
+    /**
+     * GET endpoint to retrieve a list of all appointments.
+     *
+     * @return A list of appointments in JSON format.
+     */
     @GetMapping("showAppointment")
-    public ResponseEntity<?> showAppointment() throws BloodException {
+    public ResponseEntity<List<Appointment>> showAppointment() throws BloodException {
         List<Appointment> findAll = appointService.findAll();
         return new ResponseEntity<>(findAll, HttpStatus.OK);
     }
 
-    /* FindById Appointment */
-    @GetMapping("{id}")
-    public ResponseEntity<?> showByIdAppointment(@PathVariable Integer id) throws BloodException {
-        Appointment appointment = appointService.findById(id);
-        return new ResponseEntity<Appointment>(appointment, HttpStatus.OK);
+    /**
+     * GET endpoint to retrieve a specific appointment by ID.
+     *
+     * @param appointmentId The unique identifier of the appointment.
+     * @return The requested appointment in JSON format.
+     */
+    @GetMapping("{appointmentId}")
+    public ResponseEntity<Appointment> showByIdAppointment(@PathVariable("appointmentId") Integer appointmentId)
+            throws BloodException {
+        Appointment appointment = appointService.findById(appointmentId);
+        return new ResponseEntity<>(appointment, HttpStatus.OK);
     }
 
-    /* Delete Appointment */
+    /**
+     * DELETE endpoint to delete an appointment by ID.
+     *
+     * @param appointmentId The unique identifier of the appointment to be deleted.
+     * @return A response indicating the success or failure of the operation.
+     */
     @Transactional
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteAppointment(@PathVariable Integer id) throws BloodException {
-        appointService.deleteAppointment(id);
+    @DeleteMapping("{appointmentId}")
+    public ResponseEntity<?> deleteAppointment(@PathVariable("appointmentId") Integer appointmentId)
+            throws BloodException {
+        appointService.deleteAppointment(appointmentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    /* Update Appointment */
+    /**
+     * PATCH endpoint to update an existing appointment.
+     *
+     * @param updatedAppointment The updated appointment object.
+     * @param appointmentId          The unique identifier of the appointment to be
+     *                           updated.
+     * @return A response indicating the success or failure of the operation.
+     */
     @Transactional
     @PatchMapping("updateAppointment")
-    public ResponseEntity<?> updateProduct(@RequestBody Appointment updatedAppointment,
-            @RequestParam("id") Integer id) throws BloodException {
-        Appointment existAppoint = appointService.findById(id);
+    public ResponseEntity<String> updateAppointment(@RequestBody Appointment updatedAppointment,
+            @RequestParam("appointmentId") Integer appointmentId) throws BloodException {
+        Appointment existAppoint = appointService.findById(appointmentId);
         if (existAppoint != null) {
             existAppoint.setAppointmentDate(updatedAppointment.getAppointmentDate());
             existAppoint.setAppointmentTime(updatedAppointment.getAppointmentTime());
@@ -82,8 +122,8 @@ public class AppointController {
             existAppoint.setStatus(updatedAppointment.getStatus());
 
             appointService.updateAppointment(existAppoint);
+            return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Appointment not found", HttpStatus.NOT_FOUND);
     }
-
 }

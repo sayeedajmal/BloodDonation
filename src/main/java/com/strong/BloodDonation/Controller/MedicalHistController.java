@@ -24,16 +24,31 @@ import com.strong.BloodDonation.Utils.BloodException;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * MedicalHistController class handles HTTP requests related to medical history
+ * operations.
+ * This controller uses the @RestController annotation to indicate that it's a
+ * controller and automatically serializes the returned objects into JSON
+ * format.
+ */
 @RestController
 @RequestMapping("/api/v1/medicalHistory")
 public class MedicalHistController {
 
     @Autowired
     private MedicalHistoryService medicalHistoryService;
+
     @Autowired
     private DonorService donorService;
 
-    /* Create History */
+    /**
+     * POST endpoint to create a new medical history.
+     *
+     * @param medicalHistory The medical history object to be created.
+     * @param donorId        The unique identifier of the donor associated with the
+     *                       medical history.
+     * @return A response indicating the success or failure of the operation.
+     */
     @PostMapping("createHistory")
     public ResponseEntity<String> createHistory(@ModelAttribute MedicalHistory medicalHistory,
             @RequestParam("donorId") Integer donorId) throws BloodException {
@@ -47,51 +62,77 @@ public class MedicalHistController {
         }
     }
 
-    /* Show History */
+    /**
+     * GET endpoint to retrieve a list of all medical histories.
+     *
+     * @return A list of medical histories in JSON format.
+     */
     @GetMapping("showHistory")
     public ResponseEntity<?> showHistory() {
         List<MedicalHistory> findAll = medicalHistoryService.findAll();
         if (findAll.isEmpty()) {
             return new ResponseEntity<>("Empty History", HttpStatus.NOT_FOUND);
-        } else
+        } else {
             return new ResponseEntity<List<MedicalHistory>>(findAll, HttpStatus.OK);
+        }
     }
 
-    /* FindByID History */
+    /**
+     * GET endpoint to retrieve a specific medical history by ID.
+     *
+     * @param historyId The unique identifier of the medical history.
+     * @return The requested medical history in JSON format.
+     */
     @GetMapping("{historyId}")
-    public ResponseEntity<?> showByIdHistroy(@PathVariable("historyId") Integer historyId) throws BloodException {
+    public ResponseEntity<?> showByIdHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
         MedicalHistory history = medicalHistoryService.findById(historyId);
         return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
     }
 
+    /**
+     * GET endpoint to retrieve medical history by donor ID.
+     *
+     * @param donorId The unique identifier of the donor.
+     * @return The medical history associated with the donor in JSON format.
+     */
     @GetMapping("findByDonor/{donorId}")
     public ResponseEntity<?> findByDonorId(@PathVariable("donorId") Integer donorId) throws BloodException {
         MedicalHistory history = medicalHistoryService.findByDonorId(donorId);
         return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
     }
 
-    /* Delete History */
+    /**
+     * DELETE endpoint to delete a medical history by ID.
+     *
+     * @param historyId The unique identifier of the medical history to be deleted.
+     * @return A response indicating the success or failure of the operation.
+     */
     @Transactional
     @DeleteMapping("{historyId}")
-    public ResponseEntity<?> deleteHistroy(@PathVariable("historyId") Integer historyId) throws BloodException {
+    public ResponseEntity<?> deleteHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
         medicalHistoryService.deleteHistory(historyId);
-        return new ResponseEntity<>("Deleted", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * PATCH endpoint to update an existing medical history.
+     *
+     * @param history The updated medical history object.
+     * @return A response indicating the success or failure of the operation.
+     */
     @Transactional
     @PatchMapping("updateHistory")
-    public ResponseEntity<?> updateHistory(@RequestBody MedicalHistory history)
-            throws BloodException {
-        MedicalHistory Existhistory = medicalHistoryService.findById(history.getHistoryId());
-        if (Existhistory != null) {
-            Existhistory.setAllergies(history.getAllergies());
-            Existhistory.setMedicalCondition(history.getMedicalCondition());
-            Existhistory.setDonor(history.getDonor());
-            Existhistory.setMedications(history.getMedications());
+    public ResponseEntity<?> updateHistory(@RequestBody MedicalHistory history) throws BloodException {
+        MedicalHistory existingHistory = medicalHistoryService.findById(history.getHistoryId());
+        if (existingHistory != null) {
+            existingHistory.setAllergies(history.getAllergies());
+            existingHistory.setMedicalCondition(history.getMedicalCondition());
+            existingHistory.setDonor(history.getDonor());
+            existingHistory.setMedications(history.getMedications());
 
-            medicalHistoryService.updateHistory(Existhistory);
+            medicalHistoryService.updateHistory(existingHistory);
+            return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
         }
-        return new ResponseEntity<>("Successfully Updated", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("Medical history not found", HttpStatus.NOT_FOUND);
     }
-
 }
