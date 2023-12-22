@@ -122,3 +122,57 @@
   - **PATCH** `updateStaff`
     - @Require Staff
     - @Return HttpStatus
+
+## DonationController
+
+- Base URL: `/api/v1/Donation`
+
+  - **POST** `createDonation`
+
+    - @Require Donation, Integer donationId
+    - @Return HttpStatus
+
+  - **GET** `showDonation`
+
+    - @Return HttpStatus With Donation
+
+  - **GET** `/{donationId}`
+
+    - @Param `donationId`: Integer, the unique identifier of the donation
+    - @Return HttpStatus With Donation
+
+  - **DELETE** `/{donationId}`
+
+    - @Param `donationId`: Integer, the unique identifier of the donation
+    - @Return HttpStatus
+
+  - **PATCH** `updateDonation`
+    - @Require Donation, Integer donationId
+    - @Return HttpStatus
+
+## BloodBankController
+
+- Base URL: `/api/v1/BloodBank`
+
+  - **POST** `createBank`
+
+    - @Require BloodBank, Integer bloodBankId
+    - @Return HttpStatus
+
+  - **GET** `showBank`
+
+    - @Return HttpStatus With BloodBank
+
+  - **GET** `/{bloodBankId}`
+
+    - @Param `bloodBankId`: Integer, the unique identifier of the BloodBank
+    - @Return HttpStatus With BloodBank
+
+  - **DELETE** `/{bloodBankId}`
+
+    - @Param `bloodBankId`: Integer, the unique identifier of the BloodBank
+    - @Return HttpStatus
+
+  - **PATCH** `updateBloodBank`
+    - @Require BloodBank, Integer bloodBankId
+    - @Return HttpStatus
