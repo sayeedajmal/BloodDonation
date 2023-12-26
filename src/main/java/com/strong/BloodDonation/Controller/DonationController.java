@@ -39,15 +39,9 @@ public class DonationController {
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("createDonation")
-    public ResponseEntity<String> createDonation(@ModelAttribute Donation Donation,
-            @RequestParam Integer donationId) throws BloodException {
-        Donation findById = donationService.findById(donationId);
-        if (findById != null) {
-            donationService.saveDonation(Donation);
-            return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
-        } else {
-            throw new BloodException("Can't Find Donation with ID: " + donationId);
-        }
+    public ResponseEntity<String> createDonation(@ModelAttribute Donation Donation) throws BloodException {
+        donationService.saveDonation(Donation);
+        return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
     }
 
     /**

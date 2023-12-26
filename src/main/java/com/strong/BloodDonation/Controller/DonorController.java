@@ -18,6 +18,7 @@ import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Service.DonorService;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 
 /**
@@ -52,6 +53,7 @@ public class DonorController {
      * @return A list of donors in JSON format.
      */
     @GetMapping("showDonor")
+    @Operation(summary = "Get All Donor", description = "Return Donors")
     public ResponseEntity<List<Donor>> showDonor() throws BloodException {
         List<Donor> AllDonor = donorService.findAll();
         return new ResponseEntity<List<Donor>>(AllDonor, HttpStatus.OK);
