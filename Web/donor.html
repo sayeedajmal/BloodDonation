@@ -8,8 +8,9 @@
 </head>
 
 <body>
-    <form action="http://localhost:8080/api/v1/donor/createDonor" method="post"
-        style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
+    <form action="https://localhost:443/api/v1/donor/createDonor" method="post"
+        style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;"
+        enctype="application/json">
         <input type="text" placeholder="firstName" name="firstName"><br>
         <input type="text" placeholder="lastName" name="lastName"><br>
         <input type="date" placeholder="DOB" name="DOB"><br>
@@ -29,9 +30,9 @@
 </style>
 
 <script>
-    fetch("http://localhost:8080/api/v1/donors/createDonor").then(response => response.json()).then(data=>{
+    fetch("https://localhost:443/api/v1/donor/showDonor").then(response => response.json()).then(data => {
         console.log(data);
-    }).catch(error=>console.error('error: ',error));
+    }).catch(error => console.error('error: ', error));
 </script>
 
 </html>
