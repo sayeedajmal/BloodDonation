@@ -8,6 +8,8 @@
     create database BloodBank;
     CREATE USER 'BloodBank'@'localhost' IDENTIFIED BY 'BloodBank';
 
+### Swagger API URL `http://localhost:8080/swagger-ui.html`
+
 # Documentation Of End Points
 
 ## Donor

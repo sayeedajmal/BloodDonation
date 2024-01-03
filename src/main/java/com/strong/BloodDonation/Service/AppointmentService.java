@@ -18,7 +18,7 @@ public class AppointmentService {
 
     public void saveAppointment(Appointment appointment) throws BloodException {
         if (!isWithinBusinessHours(appointment.getAppointmentTime())) {
-            throw new IllegalArgumentException("Appointment time must be within business hours.");
+            throw new BloodException("Appointment time must be within business hours.");
         }
         try {
             appointRepo.save(appointment);
@@ -49,11 +49,10 @@ public class AppointmentService {
         }
     }
 
-    /* ====================LOGIC Timing For Appointments====================== */
     public void updateAppointment(Appointment appointment) throws BloodException {
         if (appointment.getAppointmentId() != null) {
             if (appointment.getAppointmentTime() == null) {
-                throw new IllegalArgumentException("Invalid appointment data");
+                throw new BloodException("Invalid appointment data");
             }
             try {
                 appointRepo.save(appointment);
@@ -65,6 +64,7 @@ public class AppointmentService {
         }
     }
 
+    /* ====================LOGIC Timing For Appointments====================== */
     private boolean isWithinBusinessHours(LocalTime appointmentTime) {
         LocalTime businessStart = LocalTime.of(9, 0, 0);
         LocalTime businessEnd = LocalTime.of(17, 0, 0);

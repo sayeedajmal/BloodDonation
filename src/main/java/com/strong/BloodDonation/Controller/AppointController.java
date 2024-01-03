@@ -20,6 +20,7 @@ import com.strong.BloodDonation.Model.Appointment;
 import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Service.AppointmentService;
 import com.strong.BloodDonation.Service.DonorService;
+import com.strong.BloodDonation.Utils.AppointmentStatus;
 import com.strong.BloodDonation.Utils.BloodException;
 
 import jakarta.transaction.Transactional;
@@ -55,6 +56,7 @@ public class AppointController {
             @RequestParam Integer donorId) throws BloodException {
         Donor donor = donorService.findById(donorId);
         if (donor != null) {
+            appointment.setStatus(AppointmentStatus.SCHEDULED);
             appointment.setDonor(donor);
             appointService.saveAppointment(appointment);
             return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
@@ -117,7 +119,6 @@ public class AppointController {
         if (existAppoint != null) {
             existAppoint.setAppointmentDate(updatedAppointment.getAppointmentDate());
             existAppoint.setAppointmentTime(updatedAppointment.getAppointmentTime());
-            existAppoint.setDonor(updatedAppointment.getDonor());
             existAppoint.setLocation(updatedAppointment.getLocation());
             existAppoint.setStatus(updatedAppointment.getStatus());
 
