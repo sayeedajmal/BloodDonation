@@ -8,7 +8,6 @@ import org.hibernate.annotations.Check;
 import com.strong.BloodDonation.Utils.AppointmentStatus;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,21 +32,22 @@ public class Appointment {
     private Integer appointmentId;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "donorId", nullable = false)
+    @JoinColumn(name = "donorId")
+    @NotNull
     private Donor donor;
 
-    @Column(nullable = false)
+    @NotNull
     private LocalDate appointmentDate;
 
-    @Column(nullable = false)
+    @NotNull
     @Check(constraints = "appointment_time >= '09:00:00' AND appointment_time <= '17:00:00'")
     private LocalTime appointmentTime;
 
-    @Column(nullable = false)
+    @NotNull
     private String location;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull
     private AppointmentStatus status;
 
 }
