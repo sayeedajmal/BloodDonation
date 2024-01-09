@@ -25,12 +25,8 @@ public class Staff {
     private Integer staffId;
 
     @Column(nullable = false)
-    private String firstName;
+    private String staffName;
 
-    @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = true)
     private String position;
 
     @Column(nullable = false)
@@ -50,6 +46,5 @@ public class Staff {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false)
     private LocalDateTime updatedAt;
 }

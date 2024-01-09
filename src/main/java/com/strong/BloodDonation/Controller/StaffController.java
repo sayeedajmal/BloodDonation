@@ -1,6 +1,5 @@
 package com.strong.BloodDonation.Controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +49,10 @@ public class StaffController {
      * GET endpoint to retrieve a list of all staff members.
      *
      * @return A list of staff members in JSON format.
+     * @throws BloodException
      */
     @GetMapping("showStaff")
-    public ResponseEntity<?> showStaff() {
+    public ResponseEntity<?> showStaff() throws BloodException {
         List<Staff> findAll = staffService.findAll();
         return new ResponseEntity<>(findAll, HttpStatus.OK);
     }
@@ -91,20 +91,7 @@ public class StaffController {
     @Transactional
     @PatchMapping("updateStaff")
     public ResponseEntity<String> updateStaff(@RequestBody Staff updatedStaff) throws BloodException {
-        Staff existingStaff = staffService.findById(updatedStaff.getStaffId());
-        if (existingStaff != null) {
-            existingStaff.setFirstName(updatedStaff.getFirstName());
-            existingStaff.setLastName(updatedStaff.getLastName());
-            existingStaff.setContactNumber(updatedStaff.getContactNumber());
-            existingStaff.setEmail(updatedStaff.getEmail());
-            existingStaff.setEnabled(updatedStaff.isEnabled());
-            existingStaff.setPassword(updatedStaff.getPassword());
-            existingStaff.setPosition(updatedStaff.getPosition());
-            existingStaff.setUpdatedAt(LocalDateTime.now());
-
-            staffService.updateStaff(existingStaff);
-            return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Staff member not found", HttpStatus.NOT_FOUND);
+        staffService.updateStaff(updatedStaff);
+        return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
     }
 }

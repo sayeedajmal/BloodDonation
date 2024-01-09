@@ -18,7 +18,7 @@ public class MedicalHistoryService {
     public void saveHistory(MedicalHistory medicalHistory) throws BloodException {
         if (medicalHistory == null || medicalHistory.getDonor().getFirstName() == null
                 || medicalHistory.getMedicalCondition() == null) {
-            throw new IllegalArgumentException("Invalid medical history data");
+            throw new BloodException("Invalid medical history data");
         } else
             try {
                 medicalHisRepo.save(medicalHistory);

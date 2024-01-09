@@ -1,26 +1,41 @@
 package com.strong.BloodDonation.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.strong.BloodDonation.Model.Staff;
 import com.strong.BloodDonation.Repository.StaffRepo;
 import com.strong.BloodDonation.Utils.BloodException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class StaffService {
 
     @Autowired
     private StaffRepo staffRepo;
+    Boolean Manager = true;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public void createStaff(Staff staff) throws BloodException {
         if (staff != null) {
-            staff.setEnabled(false);
-            staff.setCreatedAt(LocalDateTime.now());
-            staffRepo.save(staff);
+            if (Manager) {
+                staff.setEnabled(true);
+                staff.setPosition("MANAGER");
+                staff.setUpdatedAt(null);
+                staff.setCreatedAt(LocalDateTime.now());
+                staff.setPassword(passwordEncoder.encode(staff.getPassword()));
+                staffRepo.saveAndFlush(staff);
+                Manager = false;
+            } else {
+                staff.setPassword(passwordEncoder.encode(staff.getPassword()));
+                staff.setEnabled(false);
+                staff.setUpdatedAt(null);
+                staff.setCreatedAt(LocalDateTime.now());
+                staffRepo.saveAndFlush(staff);
+            }
         } else
             throw new BloodException("Fill Correct Form");
     }
@@ -30,15 +45,15 @@ public class StaffService {
         if (staff != null) {
             return staff;
         } else
-            throw new BloodException("Staff Is Not Found with " + staffId + " ID");
+            throw new BloodException("Staff Is Not Found with " + staffId);
     }
 
-    public List<Staff> findAll() {
+    public List<Staff> findAll() throws BloodException {
         List<Staff> staff = staffRepo.findAll();
-        if (staff.size() != 0) {
+        if (!staff.isEmpty()) {
             return staff;
         } else
-            throw new IllegalArgumentException("There's No Staff");
+            throw new BloodException("There's No Staff");
     }
 
     public void deleteStaff(Integer staffId) throws BloodException {
@@ -53,14 +68,15 @@ public class StaffService {
             throw new BloodException("can't find Donor By this Id: " + staffId, new Throwable());
     }
 
-    public void updateStaff(Staff updatedStaff) {
-        if (updatedStaff.getStaffId() != null) {
-            try {
-                staffRepo.save(updatedStaff);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Error updating Donor : " + e.getLocalizedMessage());
-            }
+    public void updateStaff(Staff updatedStaff) throws BloodException {
+        Staff existingStaff = findById(updatedStaff.getStaffId());
+        if (existingStaff != null) {
+            existingStaff.setStaffName(updatedStaff.getStaffName());
+            existingStaff.setContactNumber(updatedStaff.getContactNumber());
+            existingStaff.setEmail(updatedStaff.getEmail());
+            existingStaff.setPassword(passwordEncoder.encode(updatedStaff.getPassword()));
+            existingStaff.setUpdatedAt(LocalDateTime.now());
         } else
-            throw new IllegalArgumentException("Invalid Donor Id " + updatedStaff.getStaffId());
+            throw new BloodException("can't find Donor By this Id: ");
     }
 }

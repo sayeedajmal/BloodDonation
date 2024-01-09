@@ -60,7 +60,7 @@ public class AppointmentService {
                 throw new BloodException("Error updating appointment", e);
             }
         } else {
-            throw new BloodException("Invalid Appointment ID: " + appointment.getAppointmentId());
+            throw new BloodException("Invalid Appointment ID: ");
         }
     }
 
