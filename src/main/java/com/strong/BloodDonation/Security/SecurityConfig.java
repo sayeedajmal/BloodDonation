@@ -5,7 +5,6 @@ import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,9 +19,10 @@ import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Bean
-    public SecurityFilterChain EnableWebSecurity(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
             @Override
             @Nullable
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -36,13 +36,17 @@ public class SecurityConfig {
                 return config;
             }
 
-        })).csrf(csrf -> csrf.disable())
+        })).csrf(csrf -> csrf.disable()) // CSRF Disabled
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(
-                        (authz) -> authz.requestMatchers("showStaff").authenticated())
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
-        return httpSecurity.build();
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers( "/staff/**").authenticated()
+                        .anyRequest().permitAll())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll())
+                .logout(logout -> logout.permitAll());
+
+        return http.build();
     }
 
     @Bean
