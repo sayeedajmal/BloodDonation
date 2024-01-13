@@ -93,4 +93,11 @@
 		</plugins>
 	</build>
 
+	<distributionManagement>
+		<repository>
+			<id>com.strong.blooddonation</id>
+			<name>Sayeed Ajmal</name>
+			<url>https://maven.pkg.github.com/sayeedajmal/bloodDonation-api</url>
+		</repository>
+	</distributionManagement>
 </project>
