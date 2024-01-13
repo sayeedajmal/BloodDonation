@@ -9,6 +9,8 @@ import com.strong.BloodDonation.Model.MedicalHistory;
 import com.strong.BloodDonation.Repository.MedicalHisRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import lombok.NonNull;
+
 @Service
 public class MedicalHistoryService {
 
@@ -27,7 +29,7 @@ public class MedicalHistoryService {
             }
     }
 
-    public MedicalHistory findById(Integer id) throws BloodException {
+    public MedicalHistory findById(@NonNull Integer id) throws BloodException {
         MedicalHistory history = medicalHisRepo.findById(id).orElse(null);
         if (history != null) {
             return history;

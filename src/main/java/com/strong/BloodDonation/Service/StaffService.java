@@ -3,6 +3,9 @@ package com.strong.BloodDonation.Service;
 import com.strong.BloodDonation.Model.Staff;
 import com.strong.BloodDonation.Repository.StaffRepo;
 import com.strong.BloodDonation.Utils.BloodException;
+
+import lombok.NonNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,7 +43,7 @@ public class StaffService {
             throw new BloodException("Fill Correct Form");
     }
 
-    public Staff findById(Integer staffId) throws BloodException {
+    public Staff findById(@NonNull Integer staffId) throws BloodException {
         Staff staff = staffRepo.findById(staffId).orElse(null);
         if (staff != null) {
             return staff;

@@ -5,6 +5,7 @@ import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,15 +37,13 @@ public class SecurityConfig {
                 return config;
             }
 
-        })).csrf(csrf -> csrf.disable()) // CSRF Disabled
+        })).formLogin(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable()) // CSRF Disabled
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers( "/staff/**").authenticated()
-                        .anyRequest().permitAll())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll())
-                .logout(logout -> logout.permitAll());
+                        .requestMatchers("/api/v1/staff/createStaff").permitAll()
+                        .requestMatchers("/api/v1/staff/**").authenticated()
+                        .anyRequest().permitAll());
 
         return http.build();
     }

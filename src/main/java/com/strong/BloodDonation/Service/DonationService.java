@@ -9,6 +9,8 @@ import com.strong.BloodDonation.Model.Donation;
 import com.strong.BloodDonation.Repository.DonationRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import lombok.NonNull;
+
 @Service
 public class DonationService {
 
@@ -22,7 +24,7 @@ public class DonationService {
             donationRepo.save(donation);
     }
 
-    public Donation findById(Integer donationId) throws BloodException {
+    public Donation findById(@NonNull Integer donationId) throws BloodException {
         Donation donation = donationRepo.findById(donationId).orElse(null);
         if (donation != null) {
             return donation;

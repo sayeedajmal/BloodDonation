@@ -9,6 +9,8 @@ import com.strong.BloodDonation.Model.BloodBank;
 import com.strong.BloodDonation.Repository.BloodBankRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import lombok.NonNull;
+
 @Service
 public class BloodBankService {
 
@@ -23,7 +25,7 @@ public class BloodBankService {
 
     }
 
-    public BloodBank findById(Integer bloodBankId) throws BloodException {
+    public BloodBank findById(@NonNull Integer bloodBankId) throws BloodException {
         BloodBank bloodBank = bloodBankRepo.findById(bloodBankId).orElse(null);
         if (bloodBank != null) {
             return bloodBank;

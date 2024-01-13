@@ -8,6 +8,8 @@ import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Repository.DonorRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import lombok.NonNull;
+
 @Service
 public class DonorService {
 
@@ -26,7 +28,7 @@ public class DonorService {
         }
     }
 
-    public Donor findById(Integer id) throws BloodException {
+    public Donor findById(@NonNull Integer id) throws BloodException {
         Donor donor = donorRepo.findById(id).orElse(null);
         if (donor != null) {
             return donor;

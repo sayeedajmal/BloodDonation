@@ -10,6 +10,8 @@ import com.strong.BloodDonation.Model.Appointment;
 import com.strong.BloodDonation.Repository.AppointRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import lombok.NonNull;
+
 @Service
 public class AppointmentService {
 
@@ -27,7 +29,7 @@ public class AppointmentService {
         }
     }
 
-    public Appointment findById(Integer id) throws BloodException {
+    public Appointment findById(@NonNull Integer id) throws BloodException {
         return appointRepo.findById(id)
                 .orElseThrow(() -> new BloodException("Can't Find Appointment with " + id + " Appointment ID"));
     }
@@ -41,9 +43,8 @@ public class AppointmentService {
     }
 
     public void deleteAppointment(Integer appointId) throws BloodException {
-        Appointment findById = findById(appointId);
         try {
-            appointRepo.delete(findById);
+            appointRepo.delete(findById(appointId));
         } catch (Exception e) {
             throw new BloodException("Error deleting appointment", e);
         }
