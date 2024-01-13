@@ -7,7 +7,6 @@ import com.strong.BloodDonation.Utils.BloodException;
 import lombok.NonNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,8 +18,6 @@ public class StaffService {
     @Autowired
     private StaffRepo staffRepo;
     Boolean Manager = true;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public void createStaff(Staff staff) throws BloodException {
         if (staff != null) {
@@ -29,11 +26,11 @@ public class StaffService {
                 staff.setPosition("MANAGER");
                 staff.setUpdatedAt(null);
                 staff.setCreatedAt(LocalDateTime.now());
-                staff.setPassword(passwordEncoder.encode(staff.getPassword()));
+                staff.setPassword(staff.getPassword());
                 staffRepo.saveAndFlush(staff);
                 Manager = false;
             } else {
-                staff.setPassword(passwordEncoder.encode(staff.getPassword()));
+                staff.setPassword(staff.getPassword());
                 staff.setEnabled(false);
                 staff.setUpdatedAt(null);
                 staff.setCreatedAt(LocalDateTime.now());
@@ -77,7 +74,7 @@ public class StaffService {
             existingStaff.setStaffName(updatedStaff.getStaffName());
             existingStaff.setContactNumber(updatedStaff.getContactNumber());
             existingStaff.setEmail(updatedStaff.getEmail());
-            existingStaff.setPassword(passwordEncoder.encode(updatedStaff.getPassword()));
+            existingStaff.setPassword(updatedStaff.getPassword());
             existingStaff.setUpdatedAt(LocalDateTime.now());
         } else
             throw new BloodException("can't find Donor By this Id: ");
