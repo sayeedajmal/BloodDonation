@@ -7,7 +7,6 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.2.1</version>
 		<relativePath/>
-		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.strong</groupId>
 	<artifactId>BloodDonation</artifactId>
@@ -95,9 +94,9 @@
 
 	<distributionManagement>
 		<repository>
-			<id>com.strong.blooddonation</id>
-			<name>Sayeed Ajmal</name>
-			<url>https://maven.pkg.github.com/sayeedajmal/bloodDonation-api</url>
+			<id>com.strong</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/sayeedajmal/BloodDonation/BloodDonation</url>
 		</repository>
 	</distributionManagement>
 </project>
