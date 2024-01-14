@@ -9,8 +9,8 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.strong</groupId>
-	<artifactId>BloodDonation</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>blooddonation</artifactId>
+	<version>1.0</version>
 	<name>Blood Donation</name>
 	<description>Blood Donation Restful API</description>
 	<properties>
@@ -96,7 +96,7 @@
 		<repository>
 			<id>com.strong</id>
 			<name>GitHub Packages</name>
-			<url>https://maven.pkg.github.com/sayeedajmal/BloodDonation/BloodDonation</url>
+			<url>https://maven.pkg.github.com/sayeedajmal/BloodDonation</url>
 		</repository>
 	</distributionManagement>
 </project>
