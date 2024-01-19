@@ -4,7 +4,7 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,9 +23,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        /* CORS Configuration And Allow localhost:5500 port */
         http.cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
             @Override
-            @Nullable
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:5500"));
@@ -37,13 +37,17 @@ public class SecurityConfig {
                 return config;
             }
 
-        })).formLogin(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable()) // CSRF Disabled
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/v1/staff/createStaff").permitAll()
-                        .requestMatchers("/api/v1/staff/**").authenticated()
-                        .anyRequest().permitAll());
+        }));
+        http.csrf(csrf -> csrf.disable());
+        http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers(HttpMethod.POST, "/**").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/**").authenticated()
+                .anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
+
+        // http.sessionManagement(management ->
+        // management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

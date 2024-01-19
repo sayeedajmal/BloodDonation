@@ -18,29 +18,20 @@ public class StaffService {
 
     @Autowired
     private StaffRepo staffRepo;
-    Boolean Manager = true;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void createStaff(Staff staff) throws BloodException {
-        if (staff != null) {
-            if (Manager) {
-                staff.setEnabled(true);
-                staff.setPosition("MANAGER");
-                staff.setUpdatedAt(null);
-                staff.setCreatedAt(LocalDateTime.now());
-                staff.setPassword(passwordEncoder.encode(staff.getPassword()));
-                staffRepo.saveAndFlush(staff);
-                Manager = false;
-            } else {
-                staff.setPassword(passwordEncoder.encode(staff.getPassword()));
-                staff.setEnabled(false);
-                staff.setUpdatedAt(null);
-                staff.setCreatedAt(LocalDateTime.now());
-                staffRepo.saveAndFlush(staff);
-            }
+        List<Staff> byEmail = staffRepo.findByEmail(staff.getEmail());
+        if (byEmail.isEmpty()) {
+            staff.setPosition(null);
+            staff.setPassword(passwordEncoder.encode(staff.getPassword()));
+            staff.setEnabled(false);
+            staff.setCreatedAt(LocalDateTime.now());
+            staffRepo.saveAndFlush(staff);
         } else
-            throw new BloodException("Fill Correct Form");
+            throw new BloodException("Email Already Used");
+
     }
 
     public Staff findById(@NonNull Integer staffId) throws BloodException {

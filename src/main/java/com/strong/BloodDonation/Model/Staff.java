@@ -21,12 +21,13 @@ import lombok.Setter;
 public class Staff {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer staffId;
 
     @Column(nullable = false)
     private String staffName;
 
+    @Column(nullable = true)
     private String position;
 
     @Column(nullable = false)
