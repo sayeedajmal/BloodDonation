@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +52,7 @@ public class DonorController {
      *
      * @return A list of donors in JSON format.
      */
+    @PreAuthorize("hasAuthority('Donor')")
     @GetMapping("showDonor")
     @Operation(summary = "Get All Donor", description = "Return Donors")
     public ResponseEntity<List<Donor>> showDonor() throws BloodException {
@@ -65,6 +66,7 @@ public class DonorController {
      * @param donorId The unique identifier of the donor.
      * @return The requested donor in JSON format.
      */
+    @PreAuthorize("hasAuthority('Donor','Manager')")
     @GetMapping("{donorId}")
     public ResponseEntity<Donor> showByIdDonor(@PathVariable("donorId") Integer donorId) throws BloodException {
         return new ResponseEntity<Donor>(donorService.findById(donorId), HttpStatus.OK);
@@ -76,12 +78,18 @@ public class DonorController {
      * @param donorId The unique identifier of the donor to be deleted.
      * @return A response indicating the success or failure of the operation.
      */
-    @Transactional
-    @DeleteMapping("/{donorId}")
-    public ResponseEntity<String> deleteDonor(@PathVariable("donorId") Integer donorId) throws BloodException {
-        donorService.deleteDonor(donorId);
-        return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
-    }
+    /*
+     * @PreAuthorize("hasAuthority('Donor')")
+     * 
+     * @Transactional
+     * 
+     * @DeleteMapping("/{donorId}")
+     * public ResponseEntity<String> deleteDonor(@PathVariable("donorId") Integer
+     * donorId) throws BloodException {
+     * donorService.deleteDonor(donorId);
+     * return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
+     * }
+     */
 
     /**
      * PATCH endpoint to update an existing donor.
@@ -89,23 +97,27 @@ public class DonorController {
      * @param updatedDonor The updated donor object.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Donor')")
     @Transactional
-    @PatchMapping("/updateDonor")
+    @PatchMapping("updateDonor")
     public ResponseEntity<String> updateDonor(@RequestBody Donor updatedDonor) {
         try {
             Donor existingDonor = donorService.findById(updatedDonor.getDonorId());
             if (existingDonor != null) {
-                // Update donor details
                 existingDonor.setFirstName(updatedDonor.getFirstName());
                 existingDonor.setLastName(updatedDonor.getLastName());
-                // ... (other fields)
+                existingDonor.setAddress(updatedDonor.getAddress());
+                existingDonor.setBloodGroup(updatedDonor.getBloodGroup());
+                existingDonor.setContactNumber(updatedDonor.getContactNumber());
+                existingDonor.setDOB(updatedDonor.getDOB());
+                existingDonor.setEmail(updatedDonor.getEmail());
 
                 donorService.updateDonor(existingDonor);
                 return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
             }
             return new ResponseEntity<>("Donor not found", HttpStatus.NOT_FOUND);
-        } catch (BloodException ex) {
-            return new ResponseEntity<>("Failed to update donor: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (BloodException e) {
+            return new ResponseEntity<>("Failed to update donor: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -55,6 +55,7 @@ public class StaffController {
      * @param staffId The unique identifier of the staff member.
      * @return The requested staff member in JSON format.
      */
+    @PreAuthorize("hasAuthority('Manager','Appoint','Donor','Nurse')")
     @GetMapping("{staffId}")
     public ResponseEntity<Staff> showByIdStaff(@PathVariable("staffId") Integer staffId) throws BloodException {
         Staff byId = staffService.findById(staffId);
@@ -67,6 +68,7 @@ public class StaffController {
      * @param staffId The unique identifier of the staff member to be deleted.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @Transactional
     @DeleteMapping("/{staffId}")
     public ResponseEntity<String> deleteStaff(@PathVariable Integer staffId) throws BloodException {
@@ -80,6 +82,7 @@ public class StaffController {
      * @param updatedStaff The updated staff member object.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @Transactional
     @PatchMapping("updateStaff")
     public ResponseEntity<String> updateStaff(@RequestBody Staff updatedStaff) throws BloodException {

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,6 +38,7 @@ public class BloodBankController {
      *                    BloodBank.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @PostMapping("createBank")
     public ResponseEntity<String> createBank(@ModelAttribute BloodBank bloodBank,
             @RequestParam Integer bloodBankId) throws BloodException {
@@ -54,6 +56,7 @@ public class BloodBankController {
      *
      * @return A list of BloodBanks in JSON format.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @GetMapping("showBank")
     public ResponseEntity<List<BloodBank>> showBloodBank() throws BloodException {
         List<BloodBank> findAll = bloodBankService.findAll();
@@ -66,6 +69,7 @@ public class BloodBankController {
      * @param bloodBankId The unique identifier of the BloodBank.
      * @return The requested BloodBank in JSON format.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @GetMapping("{bloodBankId}")
     public ResponseEntity<BloodBank> showByIdBloodBank(@PathVariable("bloodBankId") Integer bloodBankId)
             throws BloodException {
@@ -79,12 +83,13 @@ public class BloodBankController {
      * @param bloodBankId The unique identifier of the BloodBank to be deleted.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @Transactional
     @DeleteMapping("{bloodBankId}")
     public ResponseEntity<?> deleteBloodBank(@PathVariable("bloodBankId") Integer bloodBankId)
             throws BloodException {
         bloodBankService.deleteBlood(bloodBankId);
-        return new ResponseEntity<>("Sucessfully Deleted",HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Sucessfully Deleted", HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -95,6 +100,7 @@ public class BloodBankController {
      *                         updated.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @Transactional
     @PatchMapping("updateBloodBank")
     public ResponseEntity<String> updatebloodBank(@RequestBody BloodBank updatedBloodBank,

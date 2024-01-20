@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -49,6 +49,7 @@ public class MedicalHistController {
      *                       medical history.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Donor')")
     @PostMapping("createHistory")
     public ResponseEntity<String> createHistory(@ModelAttribute MedicalHistory medicalHistory,
             @RequestParam("donorId") Integer donorId) throws BloodException {
@@ -67,6 +68,7 @@ public class MedicalHistController {
      *
      * @return A list of medical histories in JSON format.
      */
+    @PreAuthorize("hasAuthority('Donor','Nurse')")
     @GetMapping("showHistory")
     public ResponseEntity<?> showHistory() {
         List<MedicalHistory> findAll = medicalHistoryService.findAll();
@@ -83,6 +85,7 @@ public class MedicalHistController {
      * @param historyId The unique identifier of the medical history.
      * @return The requested medical history in JSON format.
      */
+    @PreAuthorize("hasAuthority('Donor','Nurse')")
     @GetMapping("{historyId}")
     public ResponseEntity<?> showByIdHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
         MedicalHistory history = medicalHistoryService.findById(historyId);
@@ -95,6 +98,7 @@ public class MedicalHistController {
      * @param donorId The unique identifier of the donor.
      * @return The medical history associated with the donor in JSON format.
      */
+    @PreAuthorize("hasAuthority('Donor','Nurse')")
     @GetMapping("findByDonor/{donorId}")
     public ResponseEntity<?> findByDonorId(@PathVariable("donorId") Integer donorId) throws BloodException {
         MedicalHistory history = medicalHistoryService.findByDonorId(donorId);
@@ -107,12 +111,18 @@ public class MedicalHistController {
      * @param historyId The unique identifier of the medical history to be deleted.
      * @return A response indicating the success or failure of the operation.
      */
-    @Transactional
-    @DeleteMapping("{historyId}")
-    public ResponseEntity<?> deleteHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
-        medicalHistoryService.deleteHistory(historyId);
-        return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
-    }
+    /*
+     * @PreAuthorize("hasAuthority('Donor')")
+     * 
+     * @Transactional
+     * 
+     * @DeleteMapping("{historyId}")
+     * public ResponseEntity<?> deleteHistory(@PathVariable("historyId") Integer
+     * historyId) throws BloodException {
+     * medicalHistoryService.deleteHistory(historyId);
+     * return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
+     * }
+     */
 
     /**
      * PATCH endpoint to update an existing medical history.
@@ -127,7 +137,6 @@ public class MedicalHistController {
         if (existingHistory != null) {
             existingHistory.setAllergies(history.getAllergies());
             existingHistory.setMedicalCondition(history.getMedicalCondition());
-            existingHistory.setDonor(history.getDonor());
             existingHistory.setMedications(history.getMedications());
 
             medicalHistoryService.updateHistory(existingHistory);

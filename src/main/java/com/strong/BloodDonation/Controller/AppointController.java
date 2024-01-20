@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -51,6 +52,7 @@ public class AppointController {
      *                    appointment.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @PostMapping("createAppointment")
     public ResponseEntity<String> createAppointment(@ModelAttribute Appointment appointment,
             @RequestParam Integer donorId) throws BloodException {
@@ -70,6 +72,7 @@ public class AppointController {
      *
      * @return A list of appointments in JSON format.
      */
+    @PreAuthorize("hasAuthority('Appoint')")
     @GetMapping("showAppointment")
     public ResponseEntity<List<Appointment>> showAppointment() throws BloodException {
         List<Appointment> findAll = appointService.findAll();
@@ -82,6 +85,7 @@ public class AppointController {
      * @param appointmentId The unique identifier of the appointment.
      * @return The requested appointment in JSON format.
      */
+    @PreAuthorize("hasAuthority('Appoint','Nurse')")
     @GetMapping("{appointmentId}")
     public ResponseEntity<Appointment> showByIdAppointment(@PathVariable("appointmentId") Integer appointmentId)
             throws BloodException {
@@ -95,6 +99,7 @@ public class AppointController {
      * @param appointmentId The unique identifier of the appointment to be deleted.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Appoint')")
     @Transactional
     @DeleteMapping("{appointmentId}")
     public ResponseEntity<?> deleteAppointment(@PathVariable("appointmentId") Integer appointmentId)
@@ -107,10 +112,11 @@ public class AppointController {
      * PATCH endpoint to update an existing appointment.
      *
      * @param updatedAppointment The updated appointment object.
-     * @param appointmentId          The unique identifier of the appointment to be
+     * @param appointmentId      The unique identifier of the appointment to be
      *                           updated.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Appoint')")
     @Transactional
     @PatchMapping("updateAppointment")
     public ResponseEntity<String> updateAppointment(@RequestBody Appointment updatedAppointment,
@@ -124,6 +130,20 @@ public class AppointController {
 
             appointService.updateAppointment(existAppoint);
             return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Appointment not found", HttpStatus.NOT_FOUND);
+    }
+
+    @PreAuthorize("hasAuthority('Nurse')")
+    @Transactional
+    @PatchMapping("doneAppointment")
+    public ResponseEntity<String> doneAppointment(@PathVariable("appointmentId") AppointmentStatus status,
+            @RequestParam("appointmentId") Integer appointmentId) throws BloodException {
+        Appointment existAppoint = appointService.findById(appointmentId);
+        if (existAppoint != null) {
+            existAppoint.setStatus(status);
+            appointService.updateAppointment(existAppoint);
+            return new ResponseEntity<>("Updated Status Successfully", HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>("Appointment not found", HttpStatus.NOT_FOUND);
     }

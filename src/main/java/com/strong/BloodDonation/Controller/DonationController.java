@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,6 +38,7 @@ public class DonationController {
      *                   Donation.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Nurse')")
     @PostMapping("createDonation")
     public ResponseEntity<String> createDonation(@ModelAttribute Donation Donation) throws BloodException {
         donationService.saveDonation(Donation);
@@ -49,6 +50,7 @@ public class DonationController {
      *
      * @return A list of Donations in JSON format.
      */
+    @PreAuthorize("hasAuthority('Manager')")
     @GetMapping("showDonation")
     public ResponseEntity<List<Donation>> showDonation() throws BloodException {
         List<Donation> findAll = donationService.findAll();
@@ -61,25 +63,12 @@ public class DonationController {
      * @param donationId The unique identifier of the Donation.
      * @return The requested Donation in JSON format.
      */
+    @PreAuthorize("hasAuthority('Nurse','Manager')")
     @GetMapping("{donationId}")
     public ResponseEntity<Donation> showByIdDonation(@PathVariable("donationId") Integer donationId)
             throws BloodException {
         Donation Donation = donationService.findById(donationId);
         return new ResponseEntity<>(Donation, HttpStatus.OK);
-    }
-
-    /**
-     * DELETE endpoint to delete an Donation by ID.
-     *
-     * @param donationId The unique identifier of the Donation to be deleted.
-     * @return A response indicating the success or failure of the operation.
-     */
-    @Transactional
-    @DeleteMapping("{donationId}")
-    public ResponseEntity<?> deleteDonation(@PathVariable("donationId") Integer donationId)
-            throws BloodException {
-        donationService.deleteDonation(donationId);
-        return new ResponseEntity<>("Sucessfully Deleted", HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -90,6 +79,7 @@ public class DonationController {
      *                        updated.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Nurse')")
     @Transactional
     @PatchMapping("updateDonation")
     public ResponseEntity<String> updateDonation(@RequestBody Donation updatedDonation,
@@ -101,6 +91,7 @@ public class DonationController {
             existDonation.setDonationLocation(updatedDonation.getDonationLocation());
             existDonation.setDonationStatus(updatedDonation.getDonationStatus());
             existDonation.setQuantity(updatedDonation.getQuantity());
+            
             donationService.updateDonation(existDonation);
             return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
         }

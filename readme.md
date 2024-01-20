@@ -8,9 +8,39 @@
     create database BloodBank;
     CREATE USER 'BloodBank'@'localhost' IDENTIFIED BY 'BloodBank';
 
+# Positions in Blood Donation System
+
+## 1. Manager
+
+`Manager` Positions- `{donorId}`,`showDonation`,`{donationId}`,`showStaff`,`{staffId}`,`Delete {staffId}`,`updateStaff`,`[BloodBank]`
+
+- Manages overall control and access to the blood bank system.
+- Controls staff positions, enabling/disabling staff, and overseeing data management.
+
+## 2. Appointment Scheduler
+
+`Appoint` Positions- `createAppointment`,`showAppointment`,`appointmentId`,`updateAppointment`,`doneAppointment`
+
+- Creates and manages donor appointments.
+- Sends notifications to donors about scheduled appointments and manages related information.
+
+## 3. Donor/History Relations
+
+`Donor` Positions- `showDonor`,`{donorId}`,`updateDonor`,`updateDonor`,`createHistory`,`showHistory`,`{historyId}`,`findByDonor/{donorId}`,`Delete {historyId}`,`updateHistory`
+
+- Handles donor-related tasks, including updating donor information.
+- Manages the creation and updating of donor medical history records.
+
+## 4. Nurse / Donate
+
+`Nurse` Position- `showHistory`,`{historyId}`,`findByDonor/{donorId}`,`createDonation`,`{donationId}`,`updateDonation`,`{appointmentId}`,`doneAppointment`
+
+- Involved in the blood donation process, responsible for taking blood.
+- Updates information in the BloodDonation database and notifies donors about successful blood donations.
+
 ### Swagger API URL `http://localhost:8080/swagger-ui.html`
 
-# Documentation Of End Points
+# Documentation of End Points
 
 ## Donor
 
