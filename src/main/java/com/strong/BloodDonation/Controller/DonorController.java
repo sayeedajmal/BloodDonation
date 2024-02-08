@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.strong.BloodDonation.Email.MailService;
 import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Service.DonorService;
 import com.strong.BloodDonation.Utils.BloodException;
@@ -30,6 +31,8 @@ import jakarta.transaction.Transactional;
 @RestController
 @RequestMapping("/api/v1/donor")
 public class DonorController {
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private DonorService donorService;
@@ -44,6 +47,8 @@ public class DonorController {
     @PostMapping("createDonor")
     public ResponseEntity<String> createDonor(@RequestBody Donor donor) throws BloodException {
         donorService.saveDonor(donor);
+        mailService.sendDonorSignUpEmail(donor.getEmail(), donor.getFirstName() + " " + donor.getLastName(),
+                donor.getDonorId());
         return new ResponseEntity<String>("Created Successfully", HttpStatus.CREATED);
     }
 

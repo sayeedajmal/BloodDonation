@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.strong.BloodDonation.Email.MailService;
 import com.strong.BloodDonation.Model.Appointment;
 import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Service.AppointmentService;
@@ -38,6 +39,8 @@ import jakarta.transaction.Transactional;
 public class AppointController {
 
     @Autowired
+    private MailService mailService;
+    @Autowired
     private AppointmentService appointService;
 
     @Autowired
@@ -50,6 +53,7 @@ public class AppointController {
      * @param appointment The appointment object to be created.
      * @param donorId     The unique identifier of the donor associated with the
      *                    appointment.
+     * @MailService sendAppointmentNotification send the notification if sucessfull
      * @return A response indicating the success or failure of the operation.
      */
     @PreAuthorize("hasAuthority('Manager')")
@@ -61,6 +65,10 @@ public class AppointController {
             appointment.setStatus(AppointmentStatus.SCHEDULED);
             appointment.setDonor(donor);
             appointService.saveAppointment(appointment);
+            mailService.sendAppointmentNotification(
+                    appointment.getDonor().getFirstName() + " " + appointment.getDonor().getLastName(),
+                    appointment.getDonor().getEmail(), appointment.getAppointmentDate(),
+                    appointment.getAppointmentTime());
             return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
         } else {
             throw new BloodException("Can't Find Donor with ID: " + donorId);
