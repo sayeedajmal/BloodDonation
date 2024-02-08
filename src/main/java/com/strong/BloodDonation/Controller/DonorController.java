@@ -103,7 +103,11 @@ public class DonorController {
                 // Update donor details
                 existingDonor.setFirstName(updatedDonor.getFirstName());
                 existingDonor.setLastName(updatedDonor.getLastName());
-                // ... (other fields)
+                existingDonor.setAddress(updatedDonor.getAddress());
+                existingDonor.setBloodType(updatedDonor.getBloodType());
+                existingDonor.setContactNumber(updatedDonor.getContactNumber());
+                existingDonor.setDOB(updatedDonor.getDOB());
+                existingDonor.setEmail(updatedDonor.getEmail());
 
                 donorService.updateDonor(existingDonor);
                 return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
