@@ -40,7 +40,7 @@ sudo service mysql restart
 
 # Run database migrations or initialize the schema
 # Adjust this based on your project structure and build tools
-#mvn clean install
+mvn clean install
 
 # Start your application
 mvn spring-boot:run

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.strong.BloodDonation.Email.MailService;
 import com.strong.BloodDonation.Model.Donation;
 import com.strong.BloodDonation.Service.DonationService;
 import com.strong.BloodDonation.Utils.BloodException;
@@ -27,20 +28,27 @@ import jakarta.transaction.Transactional;
 public class DonationController {
 
     @Autowired
+    private MailService mailService;
+
+    @Autowired
     private DonationService donationService;
 
     /**
      *
      * POST endpoint to create a new Donation.
      *
-     * @param Donation   The Donation object to be created.
+     * @param donation   The Donation object to be created.
      * @param donationId The unique identifier of the Donation associated with the
      *                   Donation.
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("createDonation")
-    public ResponseEntity<String> createDonation(@ModelAttribute Donation Donation) throws BloodException {
-        donationService.saveDonation(Donation);
+    public ResponseEntity<String> createDonation(@ModelAttribute Donation donation) throws BloodException {
+        donationService.saveDonation(donation);
+        mailService.sendDonationConfirmation(donation.getDonor().getEmail(),
+                donation.getDonor().getFirstName() + " " + donation.getDonor().getLastName(),
+                donation.getQuantity(),
+                donation.getBloodType());
         return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
     }
 

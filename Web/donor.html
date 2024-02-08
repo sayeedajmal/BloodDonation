@@ -8,19 +8,16 @@
 </head>
 
 <body>
-    <form action="https://localhost:443/api/v1/donor/createDonor" method="post"
-        style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;"
-        enctype="application/json">
-        <input type="text" placeholder="firstName" name="firstName"><br>
-        <input type="text" placeholder="lastName" name="lastName"><br>
-        <input type="date" placeholder="DOB" name="DOB"><br>
-        <input type="text" placeholder="BloodGroup" name="BloodGroup"><br>
-        <input type="text" placeholder="contactNumber" name="contactNumber"><br>
-        <input type="email" placeholder="email" name="email"><br>
-        <input type="text" placeholder="address" name="address"><br>
-        <input type="date" placeholder="lastDonationDate" name="lastDonationDate"><br>
-        <button type="clear">Clear</button>
-        <button type="submit">Submit</button>
+    <form id="donorForm" style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
+        <input type="text" placeholder="firstName" id="firstName"><br>
+        <input type="text" placeholder="lastName" id="lastName"><br>
+        <input type="date" placeholder="dob" id="dob"><br>
+        <input type="text" placeholder="BloodGroup" id="bloodGroup"><br>
+        <input type="text" placeholder="contactNumber" id="contactNumber"><br>
+        <input type="email" placeholder="email" id="email"><br>
+        <input type="text" placeholder="address" id="address"><br>
+        <input type="date" placeholder="lastDonationDate" id="lastDonationDate"><br>
+        <button type="button" onclick="submitForm()">Submit</button>
     </form>
 </body>
 <style>
@@ -30,7 +27,45 @@
 </style>
 
 <script>
-    fetch("https://localhost:443/api/v1/donor/showDonor").then(response => response.json()).then(data => {
+
+
+    function submitForm() {
+        var donorData = {
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            dob: document.getElementById("dob").value,
+            bloodGroup: document.getElementById("bloodGroup").value,
+            contactNumber: document.getElementById("contactNumber").value,
+            email: document.getElementById("email").value,
+            address: document.getElementById("address").value,
+            lastDonationDate: document.getElementById("lastDonationDate").value
+        };
+
+        fetch('http://localhost:8080/api/v1/donor/createDonor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(donorData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                // Handle success response from server
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error response from server
+            });
+    }
+
+
+    fetch("http://localhost:8080/api/v1/donor/showDonor").then(response => response.json()).then(data => {
         console.log(data);
     }).catch(error => console.error('error: ', error));
 </script>
