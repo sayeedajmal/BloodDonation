@@ -2,7 +2,6 @@ package com.strong.BloodDonation.Model;
 
 import java.time.LocalDate;
 
-import com.strong.BloodDonation.Utils.BloodType;
 import com.strong.BloodDonation.Utils.DonationStatus;
 
 import jakarta.persistence.Column;
@@ -35,15 +34,8 @@ public class Donation {
     private LocalDate donationDate;
 
     @Column(nullable = false)
-    private String donationLocation;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private DonationStatus donationStatus;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private BloodType bloodType;
 
     @Column(nullable = false)
     private Double quantity;

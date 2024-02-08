@@ -8,17 +8,18 @@
 </head>
 
 <body>
-    <form id="donorForm" style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
+    <form style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
         <input type="text" placeholder="firstName" id="firstName"><br>
         <input type="text" placeholder="lastName" id="lastName"><br>
         <input type="date" placeholder="dob" id="dob"><br>
-        <input type="text" placeholder="BloodGroup" id="bloodGroup"><br>
+        <input type="text" placeholder="bloodType" id="bloodType"><br>
         <input type="text" placeholder="contactNumber" id="contactNumber"><br>
         <input type="email" placeholder="email" id="email"><br>
         <input type="text" placeholder="address" id="address"><br>
         <input type="date" placeholder="lastDonationDate" id="lastDonationDate"><br>
         <button type="button" onclick="submitForm()">Submit</button>
     </form>
+    <h2 style="text-align: center;" id="response"></h2>
 </body>
 <style>
     input {
@@ -34,34 +35,32 @@
             firstName: document.getElementById("firstName").value,
             lastName: document.getElementById("lastName").value,
             dob: document.getElementById("dob").value,
-            bloodGroup: document.getElementById("bloodGroup").value,
+            bloodType: document.getElementById("bloodType").value,
             contactNumber: document.getElementById("contactNumber").value,
             email: document.getElementById("email").value,
             address: document.getElementById("address").value,
             lastDonationDate: document.getElementById("lastDonationDate").value
         };
-
+        var response = document.getElementById("response");
         fetch('http://localhost:8080/api/v1/donor/createDonor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(donorData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+        }).then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
-                // Handle success response from server
+                if (typeof data === 'object') {
+                    response.innerText = JSON.stringify(data);
+                } else {
+                    response.innerText = data;
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
-                // Handle error response from server
+                response.innerText = 'Error ' + error;
             });
+
+
     }
 
 

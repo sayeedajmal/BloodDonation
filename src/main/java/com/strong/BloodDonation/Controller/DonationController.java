@@ -1,5 +1,6 @@
 package com.strong.BloodDonation.Controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.strong.BloodDonation.Email.MailService;
 import com.strong.BloodDonation.Model.Donation;
+import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Service.DonationService;
+import com.strong.BloodDonation.Service.DonorService;
 import com.strong.BloodDonation.Utils.BloodException;
 
 import jakarta.transaction.Transactional;
@@ -33,6 +36,9 @@ public class DonationController {
     @Autowired
     private DonationService donationService;
 
+    @Autowired
+    private DonorService donorService;
+
     /**
      *
      * POST endpoint to create a new Donation.
@@ -43,12 +49,17 @@ public class DonationController {
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("createDonation")
-    public ResponseEntity<String> createDonation(@ModelAttribute Donation donation) throws BloodException {
+    public ResponseEntity<String> createDonation(@ModelAttribute Donation donation,
+            @RequestParam Integer donorId) throws BloodException {
+
+        Donor byId = donorService.findById(donorId);
+        donation.setDonor(byId);
+        donation.setDonationDate(LocalDate.now());
         donationService.saveDonation(donation);
         mailService.sendDonationConfirmation(donation.getDonor().getEmail(),
                 donation.getDonor().getFirstName() + " " + donation.getDonor().getLastName(),
                 donation.getQuantity(),
-                donation.getBloodType());
+                byId.getBloodType());
         return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
     }
 
@@ -104,9 +115,7 @@ public class DonationController {
             @RequestParam("donationId") Integer donationId) throws BloodException {
         Donation existDonation = donationService.findById(donationId);
         if (existDonation != null) {
-            existDonation.setBloodType(updatedDonation.getBloodType());
             existDonation.setDonationDate(updatedDonation.getDonationDate());
-            existDonation.setDonationLocation(updatedDonation.getDonationLocation());
             existDonation.setDonationStatus(updatedDonation.getDonationStatus());
             existDonation.setQuantity(updatedDonation.getQuantity());
             donationService.updateDonation(existDonation);

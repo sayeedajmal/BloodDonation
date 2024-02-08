@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Donation Form</title>
+</head>
+
+<body>
+    <form id="donationForm" style="
+    font-size: 2.5rem;
+    text-align: center;
+    align-items: center;
+    padding:0;margin: 0;
+    align-content: center;
+  ">
+        <label for="donationStatus">Donation Status:</label>
+        <select id="donationStatus" name="donationStatus" required><br>
+            <option value="PENDING">Pending</option>
+            <option value="COMPLETED">Completed</option>
+        </select><br>
+
+
+        <label for="quantity">Quantity (in ml):</label>
+        <input type="number" id="quantity" name="quantity" required><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        document.getElementById("donationForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+
+            fetch('http://localhost:8080/api/v1/Donation/createDonation?donorId=2', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("response").innerText = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("response").innerText = 'An error occurred while processing your request.';
+                });
+        });
+    </script>
+</body>
+
+</html>
