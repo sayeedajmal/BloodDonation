@@ -43,9 +43,6 @@ public class Appointment {
     @Check(constraints = "appointment_time >= '09:00:00' AND appointment_time <= '17:00:00'")
     private LocalTime appointmentTime;
 
-    @NotNull
-    private String location;
-
     @Enumerated(EnumType.STRING)
     @NotNull
     private AppointmentStatus status;

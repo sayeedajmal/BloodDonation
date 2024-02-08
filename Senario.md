@@ -1,10 +1,11 @@
-Donor Entity:
+# Donor Entity
+
 Purpose: Represents information about blood donors.
 Attributes:
 donorId: Unique identifier for each donor.
 firstName and lastName: First and last names of the donor.
 dateOfBirth: Date of birth of the donor.
-bloodGroup: Blood group of the donor (using a BloodType enum).
+BloodType: Blood group of the donor (using a BloodType enum).
 contactNumber: Contact number of the donor.
 email: Email address of the donor.
 address: Address of the donor.

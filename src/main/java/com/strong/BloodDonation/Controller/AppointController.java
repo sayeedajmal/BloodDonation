@@ -133,7 +133,6 @@ public class AppointController {
         if (existAppoint != null) {
             existAppoint.setAppointmentDate(updatedAppointment.getAppointmentDate());
             existAppoint.setAppointmentTime(updatedAppointment.getAppointmentTime());
-            existAppoint.setLocation(updatedAppointment.getLocation());
             existAppoint.setStatus(updatedAppointment.getStatus());
 
             appointService.updateAppointment(existAppoint);

@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.strong.BloodDonation.Utils.BloodType;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,7 +45,8 @@ public class Donor {
     private Date DOB;
 
     @Column(nullable = false)
-    private String bloodGroup;
+    @Enumerated(EnumType.STRING)
+    private BloodType BloodType;
 
     @Column(nullable = false)
     private String contactNumber;
