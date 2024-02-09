@@ -1,5 +1,6 @@
 package com.strong.BloodDonation.Controller;
 
+import com.strong.BloodDonation.Email.MailService;
 import com.strong.BloodDonation.Model.Staff;
 import com.strong.BloodDonation.Service.StaffService;
 import com.strong.BloodDonation.Utils.BloodException;
@@ -24,6 +25,9 @@ public class StaffController {
     @Autowired
     private StaffService staffService;
 
+    @Autowired
+    private MailService mailService;
+
     /**
      * POST endpoint to create a new staff member.
      *
@@ -33,6 +37,7 @@ public class StaffController {
     @PostMapping("createStaff")
     public ResponseEntity<?> createStaff(@RequestBody Staff staff) throws BloodException {
         staffService.createStaff(staff);
+        mailService.sendStaffWelcomeEmail(staff);
         return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
     }
 
@@ -81,7 +86,32 @@ public class StaffController {
     @Transactional
     @PatchMapping("updateStaff")
     public ResponseEntity<String> updateStaff(@RequestBody Staff updatedStaff) throws BloodException {
+        Staff staff = staffService.findById(updatedStaff.getStaffId());
+        staff.setStaffName(updatedStaff.getStaffName());
+        staff.setEmail(updatedStaff.getEmail());
+        staff.setContactNumber(updatedStaff.getContactNumber());
+        staff.setAddress(updatedStaff.getAddress());
+
         staffService.updateStaff(updatedStaff);
+        return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
+    }
+
+    /**
+     * PATCH endpoint to update Position of an existing staff member.
+     *
+     * @param updatedStaff The updated staff member object.
+     * @return A response indicating the success or failure of the operation.
+     */
+    @Transactional
+    @PatchMapping("updateStaffPosition")
+    public ResponseEntity<String> positionStaff(@RequestBody Staff updatedStaff) throws BloodException {
+        Staff byId = staffService.findById(updatedStaff.getStaffId());
+       
+        byId.setPosition(updatedStaff.getPosition());
+        byId.setEnabled(updatedStaff.isEnabled());
+
+        staffService.updateStaff(updatedStaff);
+        mailService.sendStaffPositionNotification(updatedStaff);
         return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
     }
 }

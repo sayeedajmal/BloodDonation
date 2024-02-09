@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.strong.BloodDonation.Email.MailService;
 import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Model.MedicalHistory;
 import com.strong.BloodDonation.Service.DonorService;
@@ -41,6 +42,9 @@ public class MedicalHistController {
     @Autowired
     private DonorService donorService;
 
+    @Autowired
+    private MailService mailService;
+
     /**
      * POST endpoint to create a new medical history.
      *
@@ -56,6 +60,8 @@ public class MedicalHistController {
         if (donor != null) {
             medicalHistory.setDonor(donor);
             medicalHistoryService.saveHistory(medicalHistory);
+
+            mailService.sendMedicalHistoryNotification(medicalHistory);
             return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
         } else {
             throw new BloodException("Can't Find Donor with ID: " + donorId);
@@ -131,6 +137,8 @@ public class MedicalHistController {
             existingHistory.setMedications(history.getMedications());
 
             medicalHistoryService.updateHistory(existingHistory);
+
+            mailService.sendMedicalHistoryUpdatedNotification(existingHistory);
             return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>("Medical history not found", HttpStatus.NOT_FOUND);

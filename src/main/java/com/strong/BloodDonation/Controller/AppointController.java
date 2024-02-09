@@ -63,10 +63,7 @@ public class AppointController {
             appointment.setStatus(AppointmentStatus.SCHEDULED);
             appointment.setDonor(donor);
             appointService.saveAppointment(appointment);
-            mailService.sendAppointmentNotification(
-                    appointment.getDonor().getFirstName() + " " + appointment.getDonor().getLastName(),
-                    appointment.getDonor().getEmail(), appointment.getAppointmentDate(),
-                    appointment.getAppointmentTime());
+            mailService.sendAppointmentNotification(appointment);
             return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
         } else {
             throw new BloodException("Can't Find Donor with ID: " + donorId);
@@ -128,8 +125,8 @@ public class AppointController {
             existAppoint.setAppointmentDate(updatedAppointment.getAppointmentDate());
             existAppoint.setAppointmentTime(updatedAppointment.getAppointmentTime());
             existAppoint.setStatus(updatedAppointment.getStatus());
-
             appointService.updateAppointment(existAppoint);
+            mailService.sendUpdateAppointNotification(updatedAppointment);
             return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>("Appointment not found", HttpStatus.NOT_FOUND);
