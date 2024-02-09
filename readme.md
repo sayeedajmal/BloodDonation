@@ -1,12 +1,33 @@
-# Setup MySql
+# Blood Donation RestFul API With Email Notification Integration & Spring Security
 
-    - db name  : BloodBank
-    - username : BloodBank
-    - password : BlookBank
+- Developed A Robust Restful API For Blood Donation Management.
+- Having Main & Security Branches
+- Implemented Email Notification Interation
+- Implemented A Comprehensive System For Tracking Donor Information, Appointments, And Medical History.
+- Utilized Java And Relevant Frameworks To Build The API, Ensuring Scalability And Performance.
+- Designed Entities/Models For Donor, BloodBank, Staff, Appointment, MedicalHistory, And Donation.
+- Incorporated Features Such As Donor Registration, Appointment Scheduling, And Medical History Recording.
+- Established Relationships Between Entities To Maintain Data Integrity And Consistency.
+- Implemented Security Measures To Protect Sensitive Information And Ensure Data Privacy.
+- Created Endpoints For CRUD Operations On Various Entities, Providing A User-Friendly Interface For Interactions.
+- Ensured Proper Error Handling And Response Messages For A Smooth User Experience.
+- Optimized Database Interactions For Efficient Data Retrieval And Storage.
+- Conducted Thorough Testing To Validate Functionality, Security, And Overall System Stability.
+- Documented The API For Easy Integration And Future Maintenance.
+- Addressed Challenges With Innovative Problem-Solving And Continuous Improvement.
+- Excited To Contribute To The Healthcare Ecosystem With The Blood Donation API? Download This Project And Start Running Setup .
 
-    sudo mysql -u root
-    create database BloodBank;
-    CREATE USER 'BloodBank'@'localhost' IDENTIFIED BY 'BloodBank';
+### Swagger API URL `http://localhost:8080/swagger-ui.html`
+
+## POSITION OF STAFF
+
+- Appoint: Manages donor appointments, schedules, and confirms donation appointments.
+
+- Donor: Responsible for collecting and maintaining donor medical histories, including any relevant conditions, medications, and allergies.
+
+- Phlebotomist/Nurse: Draws blood from donors safely and efficiently during donation events.
+
+- Manager: Oversees the overall operations of the blood donation camp or organization, ensuring smooth coordination among staff, volunteers, and donors, and handling any issues that may arise.
 
 # Positions in Blood Donation System
 
@@ -31,7 +52,7 @@
 - Handles donor-related tasks, including updating donor information.
 - Manages the creation and updating of donor medical history records.
 
-## 4. Nurse / Donate
+## 4. Nurse / Phlebotomist
 
 `Nurse` Position- `showHistory`,`{historyId}`,`findByDonor/{donorId}`,`createDonation`,`{donationId}`,`updateDonation`,`{appointmentId}`,`doneAppointment`
 

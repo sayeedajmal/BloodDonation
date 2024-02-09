@@ -47,8 +47,7 @@ public class DonorController {
     @PostMapping("createDonor")
     public ResponseEntity<String> createDonor(@RequestBody Donor donor) throws BloodException {
         donorService.saveDonor(donor);
-        mailService.sendDonorSignUpEmail(donor.getEmail(), donor.getFirstName() + " " + donor.getLastName(),
-                donor.getDonorId());
+        mailService.sendDonorSignUpEmail(donor);
         return new ResponseEntity<String>("Created Successfully", HttpStatus.CREATED);
     }
 

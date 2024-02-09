@@ -37,6 +37,9 @@ public class Staff {
     private String email;
 
     @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -48,4 +51,5 @@ public class Staff {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }

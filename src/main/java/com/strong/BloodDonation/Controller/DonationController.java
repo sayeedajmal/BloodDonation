@@ -57,10 +57,7 @@ public class DonationController {
         donation.setDonor(byId);
         donation.setDonationDate(LocalDate.now());
         donationService.saveDonation(donation);
-        mailService.sendDonationConfirmation(donation.getDonor().getEmail(),
-                donation.getDonor().getFirstName() + " " + donation.getDonor().getLastName(),
-                donation.getQuantity(),
-                byId.getBloodType());
+        mailService.sendDonationConfirmation(donation);
         return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
     }
 
@@ -105,11 +102,14 @@ public class DonationController {
             @RequestParam("donationId") Integer donationId) throws BloodException {
         Donation existDonation = donationService.findById(donationId);
         if (existDonation != null) {
+            
             existDonation.setDonationDate(updatedDonation.getDonationDate());
             existDonation.setDonationStatus(updatedDonation.getDonationStatus());
             existDonation.setQuantity(updatedDonation.getQuantity());
             
             donationService.updateDonation(existDonation);
+
+            mailService.sendDonationUpdateNotification(existDonation);
             return new ResponseEntity<>("Updated Successfully", HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>("Donation not found", HttpStatus.NOT_FOUND);

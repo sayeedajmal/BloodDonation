@@ -11,8 +11,8 @@
 	</parent>
 	<groupId>com.strong</groupId>
 	<artifactId>blooddonation-security</artifactId>
-	<version>1.0</version>
 	<name>Blood Donation Security</name>
+	<version>2.0</version>
 	<description>Blood Donation Restful API</description>
 	<properties>
 		<java.version>21</java.version>

@@ -1,8 +1,7 @@
 package com.strong.BloodDonation.Email;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
-import com.strong.BloodDonation.Utils.BloodType;
+import com.strong.BloodDonation.Model.Appointment;
+import com.strong.BloodDonation.Model.Donation;
+import com.strong.BloodDonation.Model.Donor;
+import com.strong.BloodDonation.Model.MedicalHistory;
+import com.strong.BloodDonation.Model.Staff;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -64,15 +67,8 @@ public class MailService {
     }
   }
 
-  /**
-   * Sends a welcome email to a new donor who signs up.
-   * 
-   * @param to        the recipient email address
-   * @param donorName the name of the donor
-   * @param donorId   the unique ID of the donor
-   */
   @Async
-  public void sendDonorSignUpEmail(String to, String donorName, int donorId) {
+  public void sendDonorSignUpEmail(Donor donor) {
     String subject = "Welcome to Blood Donation Portal";
     String htmlContent = "<html><head><style>"
         + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
@@ -85,7 +81,8 @@ public class MailService {
         + "</style></head><body>"
         + "<div class='container'>"
         + "<h1><span class='heart'>&hearts;</span> You're a Lifesaver!</h1>"
-        + "<p>Dear <b>" + donorName + "</b>, Your ID : <b>" + donorId + "</b>,</p>"
+        + "<p>Dear <b>" + donor.getFirstName() + "" + donor.getLastName() + "</b>, Your ID : <b>" + donor.getDonorId()
+        + "</b>,</p>"
         + "<p>From the bottom of our hearts, thank you for choosing to donate blood! Your generous act will touch the lives of countless individuals in need.</p>"
         + "<p>Your decision doesn't just fill a vial, it fills their hope, their laughter, and their second chances. You are a true hero!</p>"
         + "<p>We will send you a separate email with your appointment confirmation and details once you have scheduled your donation.</p>"
@@ -95,19 +92,11 @@ public class MailService {
         + "<p>Sincerely,<br/>" + OrganisationName + "Team. </p>"
         + "</div>"
         + "</body></html>";
-    sendEmail(to, subject, htmlContent);
+    sendEmail(donor.getEmail(), subject, htmlContent);
   }
 
-  /**
-   * Sends an appointment confirmation email to a donor.
-   * 
-   * @param fullName        the full name of the recipient
-   * @param to              the recipient email address
-   * @param appointmentDate the date of the appointment
-   * @param appointmentTime the time of the appointment
-   */
-  public void sendAppointmentNotification(String fullName, String to, LocalDate appointmentDate,
-      LocalTime appointmentTime) {
+  @Async
+  public void sendAppointmentNotification(Appointment appointment) {
     String subject = "Appointment Confirmation";
     String htmlContent = "<html><head><style>"
         + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
@@ -122,11 +111,15 @@ public class MailService {
         + "</style></head><body>"
         + "<div class='container'>"
         + "<h1> <span class='heart'>&hearts;</span> Your Lifesaving Appointment is Set!</h1>"
-        + "<p>Dear <b>" + fullName + "</b>,</p>"
+        + "<p>Dear <b>" + appointment.getDonor().getFirstName() + " " + appointment.getDonor().getLastName()
+        + "</b>,</p>"
         + "<p>We're pleased to confirm your appointment for blood donation.</p>"
         + "<p>Here are the details:</p>"
         + "<ul class='info'>"
-        + "<li><b>Date and Time:</b> " + appointmentDate + " at " + appointmentTime + "</li>"
+        + "<li><b>Date and Time:</b> "
+        + appointment.getAppointmentDate().format(DateTimeFormatter.ofPattern("d MMM uuuu")) + " at "
+        + appointment.getAppointmentTime().format(DateTimeFormatter.ISO_LOCAL_TIME)
+        + "</li>"
         + "<li><b>Location:</b> " + OrganisationLocation + "</li>"
         + "<li><b>What to bring: Please bring your medical history records. </b></li>"
         + "</ul>"
@@ -136,18 +129,161 @@ public class MailService {
         + "<p>Sincerely,<br/>" + OrganisationName + " Team. </p>"
         + "</div>"
         + "</body></html>";
-    sendEmail(to, subject, htmlContent);
+    sendEmail(appointment.getDonor().getEmail(), subject, htmlContent);
   }
 
-  /**
-   * Sends a donation confirmation email to a donor.
-   * 
-   * @param to        the recipient email address
-   * @param donorName the name of the donor
-   * @param quantity  the quantity of blood donated
-   * @param bloodType the blood type donated
-   */
-  public void sendDonationConfirmation(String to, String donorName, Double quantity, BloodType bloodType) {
+  @Async
+  public void sendUpdateAppointNotification(Appointment appointment) {
+    String subject = "Appointment Update Notification";
+    String htmlContent = "<html><head><style>"
+        + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
+        + ".container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+        + "h1 { text-align: center; font-size: 24px; color: #333; }"
+        + "p { line-height: 1.5; color: #666; }"
+        + ".heart { color: #e74c3c; font-size: 2em; margin-right: 5px; }"
+        + ".info { list-style: none; padding: 0; }"
+        + ".info li { margin-bottom: 10px; }"
+        + ".button { display: block; background-color: #e74c3c; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; text-align: center; cursor: pointer; margin-top: 20px; text-decoration: none; }"
+        + ".button:hover { background-color: #c0392b; }"
+        + "</style></head><body>"
+        + "<div class='container'>"
+        + "<h1> <span class='heart'>&hearts;</span> Your Lifesaving Appointment has been Updated!</h1>"
+        + "<p>Dear <b>" + appointment.getDonor().getFirstName() + " " + appointment.getDonor().getLastName()
+        + "</b>,</p>"
+        + "<p>We're pleased to inform you that your appointment details have been updated.</p>"
+        + "<p>Here are the updated details:</p>"
+        + "<ul class='info'>"
+        + "<li><b>Date and Time:</b> "
+        + appointment.getAppointmentDate().format(DateTimeFormatter.ofPattern("d MMM uuuu")) + " at "
+        + appointment.getAppointmentTime().format(DateTimeFormatter.ISO_LOCAL_TIME)
+        + "</li>"
+        + "<li><b>Location:</b> " + OrganisationLocation + "</li>"
+        + "<li><b>Status:</b> " + appointment.getStatus() + "</li>"
+        + "</ul>"
+        + "<p>If you have any questions or need further assistance, please contact us at " + OrganisationPhone
+        + " or reply to this email.</p>"
+        + "<p>Thank you!</p>"
+        + "<p>Sincerely,<br/>" + OrganisationName + " Team. </p>"
+        + "</div>"
+        + "</body></html>";
+    sendEmail(appointment.getDonor().getEmail(), subject, htmlContent);
+  }
+
+  @Async
+  public void sendMedicalHistoryNotification(MedicalHistory history) {
+    String subject = "Medical History Created";
+    String htmlContent = "<html><head><style>"
+        + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
+        + ".container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+        + "h1 { text-align: center; font-size: 24px; color: #333; }"
+        + "p { line-height: 1.5; color: #666; }"
+        + "h3 { text-align: center; color: #333; }"
+        + ".heart { color: #e74c3c; font-size: 2em; margin-right: 5px; }"
+        + ".button { display: block; background-color: #e74c3c; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; text-align: center; cursor: pointer; margin-top: 20px; text-decoration: none; }"
+        + ".button:hover { background-color: #c0392b; }"
+        + "</style></head><ubody>"
+        + "<div class='container'>"
+        + "<h1><span class='heart'>&hearts;</span> Medical History Created</h1>"
+        + "<p>Dear " + history.getDonor().getFirstName() + ",</p>"
+        + "<p>Your medical history has been successfully recorded. This information will help us provide better care for you in the future.</p>"
+        + "<h3>Your Medical History</h3>"
+        + "<p><b>Medical Condition:</b>" + history.getMedicalCondition() + "</p>"
+        + "<p><b>Medications:</b> " + history.getMedications() + "</p>"
+        + "<p><b>Allergies:</b>" + history.getAllergies().toString() + "</p>"
+        + "<p>If you have any questions or concerns regarding your medical history, please feel free to reach out to us.</p>"
+        + "<p>Best regards,</p>"
+        + "<p>The Blood Donation Team</p>"
+        + "</div>"
+        + "</body></html>";
+
+    sendEmail(history.getDonor().getEmail(), subject, htmlContent);
+  }
+
+  @Async
+  public void sendMedicalHistoryUpdatedNotification(MedicalHistory history) {
+    String subject = "Medical History Updated";
+    String htmlContent = "<html><head><style>"
+        + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
+        + ".container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+        + "h1 { text-align: center; font-size: 24px; color: #333; }"
+        + "p { line-height: 1.5; color: #666; }"
+        + "h3 { text-align: center; color: #333; }"
+        + ".heart { color: #e74c3c; font-size: 2em; margin-right: 5px; }"
+        + ".button { display: block; background-color: #e74c3c; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; text-align: center; cursor: pointer; margin-top: 20px; text-decoration: none; }"
+        + ".button:hover { background-color: #c0392b; }"
+        + "</style></head><ubody>"
+        + "<div class='container'>"
+        + "<h1><span class='heart'>&hearts;</span> Medical History Updated</h1>"
+        + "<p>Dear " + history.getDonor().getFirstName() + ",</p>"
+        + "<p>Your medical history has been successfully updated. This information will help us provide better care for you in the future.</p>"
+        + "<h3>Your Medical History</h3>"
+        + "<p><b>Updated Medical Condition:</b>" + history.getMedicalCondition() + "</p>"
+        + "<p><b>Updated Medications:</b> " + history.getMedications() + "</p>"
+        + "<p><b>Updated Allergies:</b>" + history.getAllergies().toString() + "</p>"
+        + "<p>If you have any questions or concerns regarding your medical history, please feel free to reach out to us.</p>"
+        + "<p>Best regards,</p>"
+        + "<p>The Blood Donation Team</p>"
+        + "</div>"
+        + "</body></html>";
+
+    sendEmail(history.getDonor().getEmail(), subject, htmlContent);
+  }
+
+  @Async
+  public void sendStaffWelcomeEmail(Staff staff) {
+    String subject = "Welcome to Our Team!";
+    String htmlContent = "<html><head><style>"
+        + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
+        + ".container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+        + "h1 { text-align: center; font-size: 24px; color: #333; }"
+        + "p { line-height: 1.5; color: #666; }"
+        + ".heart { color: #e74c3c; font-size: 2em; margin-right: 5px; }"
+        + ".button { display: block; background-color: #e74c3c; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; text-align: center; cursor: pointer; margin-top: 20px; text-decoration: none; }"
+        + ".button:hover { background-color: #c0392b; }"
+        + "</style></head><body>"
+        + "<div class='container'>"
+        + "<h1><span class='heart'>&hearts;</span> Welcome to Our Team, " + staff.getStaffName() + " ID: "
+        + staff.getStaffId() + "!</h1>"
+        + "<p>We are thrilled to have you on board. Your account has been successfully created.</p>"
+        + "<p>Feel free to explore our platform and reach out if you have any questions or need assistance.</p>"
+        + "<p> <b>We've notified you about your position, please wait for further instructions.</b></p>"
+        + "<p>Best regards,</p>"
+        + "<p>The " + OrganisationName + " Manager.</p>"
+        + "</div>"
+        + "</body></html>";
+
+    sendEmail(staff.getEmail(), subject, htmlContent);
+  }
+
+  @Async
+  public void sendStaffPositionNotification(Staff staff) {
+    String subject = "Staff Position Update";
+    String htmlContent = "<html><head><style>"
+        + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
+        + ".container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+        + "h1 { text-align: center; font-size: 24px; color: #333; }"
+        + "p { line-height: 1.5; color: #666; }"
+        + ".heart { color: #e74c3c; font-size: 2em; margin-right: 5px; }"
+        + ".button { display: block; background-color: #e74c3c; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; text-align: center; cursor: pointer; margin-top: 20px; text-decoration: none; }"
+        + ".button:hover { background-color: #c0392b; }"
+        + "</style></head><body>"
+        + "<div class='container'>"
+        + "<h1><span class='heart'>&hearts;</span> Staff Position Updated Successfully!</h1>"
+        + "<p>Dear " + staff.getStaffName() + " ID: " + staff.getStaffId() + ",</p>"
+        + "<p>We're delighted to inform you that you've been assigned the position of <b>" + staff.getPosition()
+        + "</b>.</p>"
+        + "<p>Thank you for your dedication and commitment to our team. We believe you'll excel in your new role!</p>"
+        + "<p>Your position has been successfully updated. You are now <b><i>" + staff.isEnabled() + "</i></b>.</p>"
+        + "<p>Best regards,</p>"
+        + "<p>The " + OrganisationName + " Manager</p>"
+        + "</div>"
+        + "</body></html>";
+
+    sendEmail(staff.getEmail(), subject, htmlContent);
+  }
+
+  @Async
+  public void sendDonationConfirmation(Donation donation) {
     String subject = "Blood Donation Confirmation";
     String htmlContent = "<html><head><style>"
         + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
@@ -161,22 +297,55 @@ public class MailService {
         + "</style></head><body>"
         + "<div class='container'>"
         + "<h1><span class='heart'>&hearts;</span> Thank You for Donating Blood!</h1>"
-        + "<p>Dear <b>" + donorName + "</b>,</p>"
+        + "<p>Dear <b>" + donation.getDonor().getFirstName() + "" + donation.getDonor().getLastName() + "</b>,</p>"
         + "<p>We are writing to express our sincere gratitude for your recent blood donation. Your generosity will make a real difference in the lives of others.</p>"
         + "<p>Here are the details of your donation:</p>"
         + "<ul class='blood-details'>"
         + "<li>Date: " + LocalDateTime.now() + "</li>"
         + "<li>Location: " + OrganisationLocation + "</li>"
-        + "<li>Blood type: " + bloodType + "</li>"
-        + "<li>Amount donated: " + quantity + " ml</li>"
+        + "<li>Blood type: " + donation.getDonor().getBloodType() + "</li>"
+        + "<li>Amount donated: " + donation.getQuantity() + " ml</li>"
         + "</ul>"
         + "<p>Your blood donation will be used to help patients in need of medical treatment. You have truly made a lifesaving contribution.</p>"
         + "<p>In the coming days, you will receive a notification regarding your blood test results. You can also access your donor profile and donation history on our website: "
-        + "<a href='" + OrganisationWebsite + "' class='button'>" + "</p>"
+        + "<p><a href='" + OrganisationWebsite + "' class='button'>Visit our website</a></p>"
         + "<p>Thank you again for your kindness and compassion. We encourage you to continue donating blood in the future.</p>"
         + "<p>Sincerely,<br/>" + OrganisationName + " Team</p>"
         + "</div>"
         + "</body></html>";
-    sendEmail(to, subject, htmlContent);
+    sendEmail(donation.getDonor().getEmail(), subject, htmlContent);
   }
+
+  @Async
+  public void sendDonationUpdateNotification(Donation donation) {
+    String subject = "Blood Donation Update Notification";
+    String htmlContent = "<html><head><style>"
+        + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
+        + ".container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+        + "h1 { text-align: center; font-size: 24px; margin-bottom: 10px; color: #333; }"
+        + "p { line-height: 1.5; color: #666; }"
+        + ".heart { color: #e74c3c; font-size: 2em; margin-right: 5px; }"
+        + ".blood-details { font-weight: bold; }"
+        + "</style></head><body>"
+        + "<div class='container'>"
+        + "<h1><span class='heart'>&hearts;</span>Blood Donation Update Notification</h1>"
+        + "<p>Dear " + donation.getDonor().getFirstName() + ",</p>"
+        + "<p>We're writing to inform you that there has been an update to your recent blood donation.</p>"
+        + "<p>Here are the details:</p>"
+        + "<ul class='blood-details'>"
+        + "<li>Date: " + LocalDateTime.now() + "</li>"
+        + "<li>Location: " + OrganisationLocation + "</li>"
+        + "<li>Blood type: " + donation.getDonor().getBloodType() + "</li>"
+        + "<li>Updated Quantity: " + donation.getQuantity() + " ml</li>"
+        + "<li>Updated Status: <b>" + donation.getDonationStatus() + "</b></li>"
+        + "</ul>"
+        + "<p>If you have any questions or concerns, please feel free to contact us at " + OrganisationPhone
+        + " or reply to this email.</p>"
+        + "<p>Thank you for your continued support!</p>"
+        + "<p>Sincerely,<br/>" + OrganisationName + " Team</p>"
+        + "</div>"
+        + "</body></html>";
+    sendEmail(donation.getDonor().getEmail(), subject, htmlContent);
+  }
+
 }
