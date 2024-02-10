@@ -23,7 +23,7 @@ import com.strong.BloodDonation.Utils.BloodException;
 import jakarta.transaction.Transactional;
 
 @RestController
-@RequestMapping("/api/v1/BloodBank")
+@RequestMapping("/api/v1/bloodBank")
 public class BloodBankController {
     @Autowired
     private BloodBankService bloodBankService;

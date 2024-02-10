@@ -9,16 +9,46 @@
 
 <body>
     <h1 style="text-align: center;">Staff SignUp</h1>
-    <form action="https://localhost:443/api/v1/Staff/createStaff" method="post"
-        style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
-        <input type="text" placeholder="staffName" name="staffName"><br>
-        <input type="tel" placeholder="contactNumber" name="contactNumber"><br>
-        <input type="password" placeholder="password" name="password"><br>
-        <input type="email" placeholder="email" name="email"><br>
+    <form style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
+        <input type="text" placeholder="staffName" id="staffName"><br>
+        <input type="tel" placeholder="contactNumber" id="contactNumber"><br>
+        <input type="password" placeholder="password" id="password"><br>
+        <input type="email" placeholder="email" id="email"><br>
+        <input type="text" placeholder="address" id="address"><br>
         <button type="clear">Clear</button>
-        <button type="submit">Submit</button>
+        <button type="button" onclick="submitForm()">Submit</button>
     </form>
+    <h2 style="text-align: center;" id="response"></h2>
 </body>
+<script>
+    function submitForm() {
+        var staffData = {
+            staffName: document.getElementById("staffName").value,
+            contactNumber: document.getElementById("contactNumber").value,
+            password: document.getElementById("password").value,
+            email: document.getElementById("email").value,
+            address: document.getElementById("address").value,
+        };
+        var responseshow = document.getElementById("response");
+        fetch('http://localhost:8080/api/v1/staff/createStaff', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(staffData)
+        }).then(response => response.json())
+            .then(data => {
+                if (typeof data === 'object') {
+                    responseshow.innerText = JSON.stringify(data);
+                } else {
+                    responseshow.innerText = data;
+                }
+            })
+            .catch(error => {
+                responseshow.innerText = 'Error ' + error;
+            });
+    }
+</script>
 <style>
     input {
         font-size: 1.5rem;

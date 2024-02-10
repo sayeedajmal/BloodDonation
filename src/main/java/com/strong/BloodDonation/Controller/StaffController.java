@@ -1,16 +1,26 @@
 package com.strong.BloodDonation.Controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.strong.BloodDonation.Email.MailService;
 import com.strong.BloodDonation.Model.Staff;
 import com.strong.BloodDonation.Service.StaffService;
 import com.strong.BloodDonation.Utils.BloodException;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.transaction.Transactional;
 
 /**
  * StaffController class handles HTTP requests related to staff operations.
@@ -99,19 +109,24 @@ public class StaffController {
     /**
      * PATCH endpoint to update Position of an existing staff member.
      *
-     * @param updatedStaff The updated staff member object.
+     * @param staffId  The unique identifier of the staff member to be
+     *                 positioned.
+     * @param position The position to be assigned.
+     * @param enabled  The staff will be enabled or disabled from here.
      * @return A response indicating the success or failure of the operation.
      */
     @Transactional
     @PatchMapping("updateStaffPosition")
-    public ResponseEntity<String> positionStaff(@RequestBody Staff updatedStaff) throws BloodException {
-        Staff byId = staffService.findById(updatedStaff.getStaffId());
-       
-        byId.setPosition(updatedStaff.getPosition());
-        byId.setEnabled(updatedStaff.isEnabled());
+    public ResponseEntity<String> positionStaff(@RequestParam("staffId") Integer staffId,
+            @RequestParam String position,
+            @RequestParam Boolean enabled) throws BloodException {
+        Staff byId = staffService.findById(staffId);
 
-        staffService.updateStaff(updatedStaff);
-        mailService.sendStaffPositionNotification(updatedStaff);
+        byId.setPosition(position);
+        byId.setEnabled(enabled);
+
+        staffService.updateStaff(byId);
+        mailService.sendStaffPositionNotification(byId);
         return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
     }
 }
