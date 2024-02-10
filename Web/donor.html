@@ -7,7 +7,7 @@
     <title>Donor Form</title>
 </head>
 
-<body>
+<body>  
     <h1 style="text-align: center;">Donor SignUp</h1>
     <form style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
         <input type="text" placeholder="firstName" id="firstName"><br>
@@ -42,7 +42,7 @@
             address: document.getElementById("address").value,
             lastDonationDate: document.getElementById("lastDonationDate").value
         };
-        var response = document.getElementById("response");
+        var responseshow = document.getElementById("response");
         fetch('http://localhost:8080/api/v1/donor/createDonor', {
             method: 'POST',
             headers: {
@@ -52,13 +52,13 @@
         }).then(response => response.json())
             .then(data => {
                 if (typeof data === 'object') {
-                    response.innerText = JSON.stringify(data);
+                    responseshow.innerText = JSON.stringify(data);
                 } else {
-                    response.innerText = data;
+                    responseshow.innerText = data;
                 }
             })
             .catch(error => {
-                response.innerText = 'Error ' + error;
+                responseshow.innerText = 'Error ' + error;
             });
 
 
