@@ -9,42 +9,39 @@
 
 <body>
     <h1 style="text-align: center;">Staff Position</h1>
-    <h3 style="text-align: center;" id="responseShow"></h3>
 
     <form id="updateForm" style="font-size: 2.5rem;text-align: center;align-items: center;align-content: center;">
 
-        <input type="text" placeholder="position" name="position" /><br />
-        <input type="checkbox" placeholder="enabled" name="enabled" value="true">Enabled<br>
+        <input type="text" placeholder="position" id="position" /><br />
+        <input type="checkbox" placeholder="enabled" id="enabled">Enabled<br>
 
         <button type="reset">Clear</button>
         <button type="button" onclick="updateStaffPosition()">Submit</button>
     </form>
+    <h3 style="text-align: center;" id="responseShow"></h3>
 </body>
 <script>
     function updateStaffPosition() {
         var responseShow = document.getElementById("responseShow");
+        var position = document.getElementById('position').value;
+        var enabled = document.getElementById('enabled').checked;
 
-        var formData = {
-            position: document.querySelector('input[name="position"]').value,
-            enabled: document.querySelector('input[name="enabled"]').checked
-        };
+        // Construct the form data as a string
+        var formDataString = '&position=' + encodeURIComponent(position) + '&enabled=' + (enabled ? 'true' : 'false');
 
-        fetch('http://localhost:8080/api/v1/staff/updateStaffPosition?staffId=3', {
+
+        fetch('http://localhost:8080/api/v1/staff/updateStaffPosition?staffId=3' + formDataString, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
-        }).then(response => response.json())
+            
+        }).then(response => response.text())
             .then(data => {
-                if (typeof data === 'object') {
-                    responseshow.innerText = JSON.stringify(data);
-                } else {
-                    responseshow.innerText = data;
-                }
+                responseShow.innerText = data;
             })
             .catch(error => {
-                responseshow.innerText = 'Error ' + error;
+                responseShow.innerText = 'Error ' + error;
             });
     }
 

@@ -259,6 +259,8 @@ public class MailService {
   @Async
   public void sendStaffPositionNotification(Staff staff) {
     String subject = "Staff Position Update";
+    String status = staff.isEnabled() ? "Active" : "Deactive";
+
     String htmlContent = "<html><head><style>"
         + "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }"
         + ".container { background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
@@ -275,7 +277,7 @@ public class MailService {
         + "<h4>We're delighted to inform you that you've been assigned the position of <b>" + staff.getPosition()
         + "</b>.</h4>"
         + "<p>Thank you for your dedication and commitment to our team. We believe you'll excel in your new role!</p>"
-        + "<h4>Your position has been successfully updated. You are now <b><i>" + staff.isEnabled() + "</i></b>.</h4>"
+        + "<h4>Your position has been successfully updated. You are now <b><i>" + status + "</i></b>.</h4>"
         + "<p>Best regards,</p>"
         + "<p>The " + OrganisationName + " Manager</p>"
         + "</div>"
@@ -303,7 +305,7 @@ public class MailService {
         + "<p>We are writing to express our sincere gratitude for your recent blood donation. Your generosity will make a real difference in the lives of others.</p>"
         + "<p>Here are the details of your donation:</p>"
         + "<ul class='blood-details'>"
-        + "<li>Date: " + LocalDateTime.now() + "</li>"
+        + "<li>Date: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "</li>"
         + "<li>Location: " + OrganisationLocation + "</li>"
         + "<li>Blood type: " + donation.getDonor().getBloodType() + "</li>"
         + "<li>Amount donated: " + donation.getQuantity() + " ml</li>"
@@ -335,7 +337,7 @@ public class MailService {
         + "<p>We're writing to inform you that there has been an update to your recent blood donation.</p>"
         + "<p>Here are the details:</p>"
         + "<ul class='blood-details'>"
-        + "<li>Date: " + LocalDateTime.now() + "</li>"
+        + "<li>Date: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "</li>"
         + "<li>Location: " + OrganisationLocation + "</li>"
         + "<li>Blood type: " + donation.getDonor().getBloodType() + "</li>"
         + "<li>Updated Quantity: " + donation.getQuantity() + " ml</li>"

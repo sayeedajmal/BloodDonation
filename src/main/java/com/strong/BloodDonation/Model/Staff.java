@@ -27,6 +27,7 @@ public class Staff {
     @Column(nullable = false)
     private String staffName;
 
+    @Column(nullable = false)
     private String position;
 
     @Column(nullable = false)
