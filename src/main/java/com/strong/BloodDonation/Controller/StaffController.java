@@ -123,14 +123,12 @@ public class StaffController {
     @PreAuthorize("hasAuthority('Manager')")
     @Transactional
     @PatchMapping("updateStaffPosition")
-    public ResponseEntity<String> positionStaff(@RequestParam("staffId") Integer staffId,
-            @RequestParam String position,
-            @RequestParam Boolean enabled) throws BloodException {
+    public ResponseEntity<String> positionStaff(@RequestParam("staffId") Integer staffId, String position,
+            boolean enabled) throws BloodException {
         Staff byId = staffService.findById(staffId);
 
         byId.setPosition(position);
         byId.setEnabled(enabled);
-
         staffService.updateStaff(byId);
         mailService.sendStaffPositionNotification(byId);
         return new ResponseEntity<>("Updated Successfully", HttpStatus.OK);
