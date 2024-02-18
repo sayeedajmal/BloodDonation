@@ -9,6 +9,7 @@ import com.strong.BloodDonation.Model.BloodBank;
 import com.strong.BloodDonation.Repository.BloodBankRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 
 @Service
@@ -17,6 +18,8 @@ public class BloodBankService {
     @Autowired
     private BloodBankRepo bloodBankRepo;
 
+
+    @Transactional
     public void saveBlood(BloodBank bloodBank) throws BloodException {
         if (bloodBank == null) {
             throw new BloodException("Fill All Fields Correctly");
@@ -39,19 +42,6 @@ public class BloodBankService {
             return bloodBank;
         } else
             throw new BloodException("There isn't Any BloodBank right Now..");
-    }
-
-    public void deleteBlood(Integer bloodBankId) throws BloodException {
-        BloodBank bloodBank = findById(bloodBankId);
-        if (bloodBank != null) {
-            try {
-                bloodBankRepo.delete(bloodBank);
-            } catch (Exception e) {
-                throw new BloodException("Error deleting Blood : " + e.getLocalizedMessage());
-            }
-        } else
-            throw new BloodException("can't find Blood By this Id: " + bloodBankId, new Throwable());
-
     }
 
     public void updateBlood(BloodBank updatedBlood) throws BloodException {

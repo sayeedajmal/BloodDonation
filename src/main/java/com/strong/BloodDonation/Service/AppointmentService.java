@@ -42,6 +42,7 @@ public class AppointmentService {
         return findAll;
     }
 
+    @SuppressWarnings("null")
     public void deleteAppointment(Integer appointId) throws BloodException {
         try {
             appointRepo.delete(findById(appointId));

@@ -1,6 +1,9 @@
 package com.strong.BloodDonation.Model;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
 
 import com.strong.BloodDonation.Utils.BloodType;
 
@@ -9,11 +12,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.MapKeyEnumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -27,7 +29,7 @@ import lombok.Setter;
 public class BloodBank {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Value("${bloodDonation.organisation.Id}")
     private Integer bloodBankId;
 
     @Column(nullable = false)
@@ -44,20 +46,13 @@ public class BloodBank {
     @Email
     private String email;
 
-    @ElementCollection(targetClass = BloodType.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "blood_bank_available_groups", joinColumns = @JoinColumn(name = "bloodBankId"))
-    @Column(name = "available_blood_group")
-    private List<BloodType> availableBloodGroups;
+    @Column(nullable = false)
+    private LocalDate donationDate;
 
-    /*
-     * - The availableBloodGroups field is a Set of BloodType enums.
-     * - The @ElementCollection annotation is used to indicate that
-     * availableBloodGroups is a collection of simple types (enums in this case).
-     * - The @Enumerated(EnumType.STRING) annotation specifies that the enums should
-     * be stored as strings in the database.
-     * - The @CollectionTable annotation is used to specify the name of the table that
-     * will store the blood groups, and the @Column annotation specifies the name of
-     * the column.
-     */
+    @ElementCollection
+    @CollectionTable(name = "blood_bank_available_blood", joinColumns = @JoinColumn(name = "bloodBankId"))
+    @MapKeyEnumerated(EnumType.STRING)
+    @MapKeyColumn(name = "blood_type")
+    @Column(name = "quantity")
+    private Map<BloodType, Double> availableBloodGroups;
 }

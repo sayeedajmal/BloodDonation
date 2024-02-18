@@ -11,7 +11,8 @@ email: Email address of the donor.
 address: Address of the donor.
 lastDonationDate: Date of the donor's last blood donation.
 
-Donation Entity:
+# Donation Entity:
+
 Purpose: Represents information about blood donations.
 Attributes:
 donationId: Unique identifier for each donation.
@@ -22,7 +23,8 @@ donationStatus: Status of the donation (using a DonationStatus enum).
 bloodType: Blood type of the donated blood (using a BloodType enum).
 quantity: Quantity of blood donated.
 
-BloodBank Entity:
+# BloodBank Entity:
+
 Purpose: Represents information about blood banks.
 Attributes:
 bloodBankId: Unique identifier for each blood bank.
@@ -32,7 +34,8 @@ contactNumber: Contact number of the blood bank.
 email: Email address of the blood bank.
 availableBloodGroups: Set of available blood groups (using a BloodType enum).
 
-Staff Entity:
+# Staff Entity:
+
 Purpose: Represents information about staff members involved in the blood donation system.
 Attributes:
 staffId: Unique identifier for each staff member.
@@ -42,7 +45,8 @@ contactNumber: Contact number of the staff member.
 email: Email address of the staff member.
 Additional security-related fields can be added based on your requirements.
 
-Appointment Entity:
+# Appointment Entity:
+
 Purpose: Represents information about donor appointments.
 Attributes:
 appointmentId: Unique identifier for each appointment.
@@ -52,7 +56,8 @@ appointmentTime: Time of the appointment.
 location: Location of the appointment.
 status: Status of the appointment.
 
-MedicalHistory Entity:
+# MedicalHistory Entity
+
 Purpose: Represents the medical history of blood donors.
 Attributes:
 historyId: Unique identifier for each medical history entry.
