@@ -1,5 +1,6 @@
 package com.strong.BloodDonation.Controller;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.strong.BloodDonation.Email.MailService;
+import com.strong.BloodDonation.Model.Appointment;
 import com.strong.BloodDonation.Model.Donation;
 import com.strong.BloodDonation.Model.Donor;
+import com.strong.BloodDonation.Service.AppointmentService;
 import com.strong.BloodDonation.Service.DonationService;
 import com.strong.BloodDonation.Service.DonorService;
+import com.strong.BloodDonation.Utils.AppointmentStatus;
 import com.strong.BloodDonation.Utils.BloodException;
 
 import jakarta.transaction.Transactional;
@@ -39,26 +43,41 @@ public class DonationController {
     @Autowired
     private DonorService donorService;
 
+    @Autowired
+    private AppointmentService appointmentService;
+
     /**
-     *
      * POST endpoint to create a new Donation.
      *
-     * @param donation   The Donation object to be created.
-     * @param donationId The unique identifier of the Donation associated with the
-     *                   Donation.
+     * @param donation The Donation object to be created.
+     * @param donorId  The unique identifier of the Donor associated with the
+     *                 Donation.
      * @return A response indicating the success or failure of the operation.
+     * @throws BloodException If there's an error processing the donation.
      */
     @PreAuthorize("hasAuthority('Nurse')")
     @PostMapping("createDonation")
     public ResponseEntity<String> createDonation(@ModelAttribute Donation donation,
-            @RequestParam Integer donorId) throws BloodException {
+            @RequestParam Integer appointId) throws BloodException {
 
-        Donor byId = donorService.findById(donorId);
-        donation.setDonor(byId);
+        Appointment appointment = appointmentService.findById(appointId);
+        Donor donor = donorService.findById(appointment.getDonor().getDonorId());
+
+        donation.setDonor(donor);
+
         donation.setDonationDate(LocalDate.now());
         donationService.saveDonation(donation);
+
+        donor.setLastDonationDate(Date.valueOf(LocalDate.now()));
+        donorService.updateDonor(donor);
+
+        appointment.setStatus(AppointmentStatus.CONFIRMED);
+        appointmentService.updateAppointment(appointment);
+
+        // Send donation confirmation email
         mailService.sendDonationConfirmation(donation);
-        return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
+
+        return new ResponseEntity<>("Donation created successfully", HttpStatus.CREATED);
     }
 
     /**
@@ -102,11 +121,11 @@ public class DonationController {
             @RequestParam("donationId") Integer donationId) throws BloodException {
         Donation existDonation = donationService.findById(donationId);
         if (existDonation != null) {
-            
+
             existDonation.setDonationDate(updatedDonation.getDonationDate());
             existDonation.setDonationStatus(updatedDonation.getDonationStatus());
             existDonation.setQuantity(updatedDonation.getQuantity());
-            
+
             donationService.updateDonation(existDonation);
 
             mailService.sendDonationUpdateNotification(existDonation);

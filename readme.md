@@ -17,7 +17,23 @@
 - Addressed Challenges With Innovative Problem-Solving And Continuous Improvement.
 - Excited To Contribute To The Healthcare Ecosystem With The Blood Donation API? Download This Project And Start Running Setup .
 
-### Swagger API URL `http://localhost:8080/swagger-ui.html`
+## Variables
+
+    bloodDonation.organisation.Id=${ORG_ID}
+    bloodDonation.organisation.name=${ORG_NAME}
+    bloodDonation.organisation.website=https://sayeedthedev.web.app
+    bloodDonation.organisation.PhoneNumber=${NUMBER}
+    bloodDonation.organisation.Location=${LOCATION}
+    bloodDonation.organisation.OrganisationEmail=${EMAIL}
+    bloodDonation.organisation.OrganisationEmailPassword=${PASSWORD}
+
+    # DataSource Configuration
+    spring.datasource.url=jdbc:mysql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    spring.datasource.username=${PROD_DB_USERNAME}
+    spring.datasource.password=${PROD_DB_PASSWORD}
+    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+## Swagger API URL `http://localhost:8080/swagger-ui.html`
 
 ## POSITION OF STAFF
 
@@ -182,7 +198,7 @@
 
   - **POST** `createDonation`
 
-    - @Require Donation, Integer donationId
+    - @Require Donation, Integer appointId
     - @Return HttpStatus
 
   - **GET** `showDonation`
@@ -193,11 +209,6 @@
 
     - @Param `donationId`: Integer, the unique identifier of the donation
     - @Return HttpStatus With Donation
-
-  - **DELETE** `/{donationId}`
-
-    - @Param `donationId`: Integer, the unique identifier of the donation
-    - @Return HttpStatus
 
   - **PATCH** `updateDonation`
     - @Require Donation, Integer donationId
@@ -220,11 +231,6 @@
 
     - @Param `bloodBankId`: Integer, the unique identifier of the BloodBank
     - @Return HttpStatus With BloodBank
-
-  - **DELETE** `/{bloodBankId}`
-
-    - @Param `bloodBankId`: Integer, the unique identifier of the BloodBank
-    - @Return HttpStatus
 
   - **PATCH** `updateBloodBank`
     - @Require BloodBank, Integer bloodBankId

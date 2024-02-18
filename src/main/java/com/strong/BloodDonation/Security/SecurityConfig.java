@@ -25,7 +25,7 @@ public class SecurityConfig {
         /* CORS Configuration And Allow localhost:5500 port */
         http.cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
             @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+            public CorsConfiguration getCorsConfiguration(@SuppressWarnings("null") HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:5500"));
                 config.setAllowedMethods(Collections.singletonList("*"));
