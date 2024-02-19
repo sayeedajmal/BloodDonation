@@ -113,6 +113,7 @@ public class MailService {
         + "<h1> <span class='heart'>&hearts;</span> Your Lifesaving Appointment is Set!</h1>"
         + "<p>Dear <b>" + appointment.getDonor().getFirstName() + " " + appointment.getDonor().getLastName()
         + "</b>,</p>"
+        + "<p>Your Appointment ID : <b>"+appointment.getAppointmentId()+"</b></p>"
         + "<p>We're pleased to confirm your appointment for blood donation.</p>"
         + "<p>Here are the details:</p>"
         + "<ul class='info'>"
