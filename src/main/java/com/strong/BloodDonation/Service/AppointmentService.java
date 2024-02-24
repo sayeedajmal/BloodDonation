@@ -1,13 +1,18 @@
 package com.strong.BloodDonation.Service;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.strong.BloodDonation.Model.Appointment;
+import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Repository.AppointRepo;
+import com.strong.BloodDonation.Repository.DonorRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
 import lombok.NonNull;
@@ -17,6 +22,9 @@ public class AppointmentService {
 
     @Autowired
     private AppointRepo appointRepo;
+
+    @Autowired
+    private DonorRepo donorRepo;
 
     public void saveAppointment(Appointment appointment) throws BloodException {
         if (!isWithinBusinessHours(appointment.getAppointmentTime())) {
@@ -66,6 +74,38 @@ public class AppointmentService {
         }
     }
 
+    @SuppressWarnings("null")
+    public List<Donor> doAppointDonor() throws BloodException {
+        List<Integer> todayAppointments = appointRepo.doAppointDonor();
+        List<Donor> donorList = new ArrayList<>();
+
+        for (Integer donorId : todayAppointments) {
+            donorList.add(donorRepo.findById(donorId).orElse(null));
+        }
+        if (!donorList.isEmpty()) {
+            return donorList;
+        } else
+            throw new BloodException("Chill ! There isn't Any Donor TO Draw The Blood");
+    }
+
+    public List<Appointment> todayAppointments() throws BloodException {
+        List<Appointment> todayAppointments = appointRepo.todayAppointments(LocalDate.now());
+        if (!todayAppointments.isEmpty()) {
+            return todayAppointments;
+        } else
+            throw new BloodException("There isn't Any Appointment Today");
+    }
+
+    public List<Appointment> findAppointByDate(LocalDate date) throws BloodException {
+        List<Appointment> findAppoint = appointRepo.findAppointByDate(date);
+
+        if (!findAppoint.isEmpty()) {
+            return findAppoint;
+        } else
+            throw new BloodException(
+                    "There isn't Any Appoint In " + date.format(DateTimeFormatter.ofPattern("u MMM yyyy")));
+    }
+
     /* ====================LOGIC Timing For Appointments====================== */
     private boolean isWithinBusinessHours(LocalTime appointmentTime) {
         LocalTime businessStart = LocalTime.of(9, 0, 0);
@@ -73,4 +113,5 @@ public class AppointmentService {
         return !appointmentTime.isBefore(businessStart) &&
                 !appointmentTime.isAfter(businessEnd);
     }
+
 }

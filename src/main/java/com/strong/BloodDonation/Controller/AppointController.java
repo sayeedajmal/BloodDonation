@@ -1,5 +1,6 @@
 package com.strong.BloodDonation.Controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +103,7 @@ public class AppointController {
      */
     @Transactional
     @DeleteMapping("{appointmentId}")
-    public ResponseEntity<?> deleteAppointment(@PathVariable("appointmentId") Integer appointmentId)
+    public ResponseEntity<Integer> deleteAppointment(@PathVariable("appointmentId") Integer appointmentId)
             throws BloodException {
         appointService.deleteAppointment(appointmentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -131,4 +132,45 @@ public class AppointController {
         }
         return new ResponseEntity<>("Appointment not found", HttpStatus.NOT_FOUND);
     }
+
+    /**
+     * GET endpoint to retrieve appointments where donors are appointed for today.
+     *
+     * @return ResponseEntity containing a list of appointments for today, if any,
+     *         with HTTP status 200 (OK).
+     * @throws BloodException if there is an error retrieving today's appointments.
+     */
+    @GetMapping("todayAppointments")
+    public ResponseEntity<List<Appointment>> todayAppointment() throws BloodException {
+        return new ResponseEntity<>(appointService.todayAppointments(), HttpStatus.OK);
+    }
+
+    /**
+     * GET endpoint to retrieve donors who are not appointed yet.
+     *
+     * @return ResponseEntity containing the list of donors who are not appointed
+     *         yet,
+     *         if any, with HTTP status 200 (OK).
+     * @throws BloodException if there is an error retrieving donor who not
+     *                        appointed yet.
+     */
+    @GetMapping("doAppointDonor")
+    public ResponseEntity<List<Donor>> doAppointDonor() throws BloodException {
+        return new ResponseEntity<>(appointService.doAppointDonor(), HttpStatus.OK);
+    }
+
+    /**
+     * GET endpoint to retrieve appointments based on a specific date.
+     *
+     * @return ResponseEntity containing the list of appointments for the specified
+     *         date, if any, with HTTP status 200 (OK).
+     * @throws BloodException if there is an error retrieving appointments for the
+     *                        specified date.
+     */
+    @GetMapping("findByDate")
+    public ResponseEntity<List<Appointment>> findAppointByDate(@PathVariable("date") LocalDate date)
+            throws BloodException {
+        return new ResponseEntity<>(appointService.findAppointByDate(date), HttpStatus.OK);
+    }
+
 }

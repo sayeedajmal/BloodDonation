@@ -72,15 +72,11 @@ public class MedicalHistController {
      * GET endpoint to retrieve a list of all medical histories.
      *
      * @return A list of medical histories in JSON format.
+     * @throws BloodException
      */
     @GetMapping("showHistory")
-    public ResponseEntity<?> showHistory() {
-        List<MedicalHistory> findAll = medicalHistoryService.findAll();
-        if (findAll.isEmpty()) {
-            return new ResponseEntity<>("Empty History", HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<List<MedicalHistory>>(findAll, HttpStatus.OK);
-        }
+    public ResponseEntity<List<MedicalHistory>> showHistory() throws BloodException {
+        return new ResponseEntity<>(medicalHistoryService.findAll(), HttpStatus.OK);
     }
 
     /**
@@ -90,7 +86,8 @@ public class MedicalHistController {
      * @return The requested medical history in JSON format.
      */
     @GetMapping("{historyId}")
-    public ResponseEntity<?> showByIdHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
+    public ResponseEntity<MedicalHistory> showByIdHistory(@PathVariable("historyId") Integer historyId)
+            throws BloodException {
         MedicalHistory history = medicalHistoryService.findById(historyId);
         return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
     }
@@ -102,7 +99,8 @@ public class MedicalHistController {
      * @return The medical history associated with the donor in JSON format.
      */
     @GetMapping("findByDonor/{donorId}")
-    public ResponseEntity<?> findByDonorId(@PathVariable("donorId") Integer donorId) throws BloodException {
+    public ResponseEntity<MedicalHistory> findByDonorId(@PathVariable("donorId") Integer donorId)
+            throws BloodException {
         MedicalHistory history = medicalHistoryService.findByDonorId(donorId);
         return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
     }
@@ -115,7 +113,7 @@ public class MedicalHistController {
      */
     @Transactional
     @DeleteMapping("{historyId}")
-    public ResponseEntity<?> deleteHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
+    public ResponseEntity<String> deleteHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
         medicalHistoryService.deleteHistory(historyId);
         return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
     }
@@ -128,7 +126,7 @@ public class MedicalHistController {
      */
     @Transactional
     @PatchMapping("updateHistory")
-    public ResponseEntity<?> updateHistory(@RequestBody MedicalHistory history) throws BloodException {
+    public ResponseEntity<String> updateHistory(@RequestBody MedicalHistory history) throws BloodException {
         MedicalHistory existingHistory = medicalHistoryService.findById(history.getHistoryId());
         if (existingHistory != null) {
             existingHistory.setAllergies(history.getAllergies());

@@ -45,7 +45,7 @@ public class StaffController {
      * @return A response indicating the success or failure of the operation.
      */
     @PostMapping("createStaff")
-    public ResponseEntity<?> createStaff(@RequestBody Staff staff) throws BloodException {
+    public ResponseEntity<String> createStaff(@RequestBody Staff staff) throws BloodException {
         staffService.createStaff(staff);
         mailService.sendStaffWelcomeEmail(staff);
         return new ResponseEntity<>("Created Successfully", HttpStatus.CREATED);
@@ -57,7 +57,7 @@ public class StaffController {
      * @return A list of staff members in JSON format.
      */
     @GetMapping("showStaff")
-    public ResponseEntity<?> showStaff() throws BloodException {
+    public ResponseEntity<List<Staff>> showStaff() throws BloodException {
         List<Staff> findAll = staffService.findAll();
         return new ResponseEntity<>(findAll, HttpStatus.OK);
     }
