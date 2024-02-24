@@ -130,8 +130,22 @@
     - @Return HttpStatus
 
   - **PATCH** `updateAppointment`
+
     - @Require Appointment, Integer id
     - @Return HttpStatus
+
+  - **GET** `todayAppointments`
+
+    - @Return List of Todays Appointment
+
+  - **GET** `doAppointDonor`
+
+    - @Return List of Donors Who are Not Appointed Yet
+
+  - **GET** `findByDate`
+
+    - @Require date (LocalDate)
+    - @Return List of Appointments
 
 ## MedicalHistController
 

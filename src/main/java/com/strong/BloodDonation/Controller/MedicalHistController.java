@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -73,16 +74,12 @@ public class MedicalHistController {
      * GET endpoint to retrieve a list of all medical histories.
      *
      * @return A list of medical histories in JSON format.
+     * @throws BloodException
      */
     @PreAuthorize("hasAuthority('Donor','Nurse')")
     @GetMapping("showHistory")
-    public ResponseEntity<?> showHistory() {
-        List<MedicalHistory> findAll = medicalHistoryService.findAll();
-        if (findAll.isEmpty()) {
-            return new ResponseEntity<>("Empty History", HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<List<MedicalHistory>>(findAll, HttpStatus.OK);
-        }
+    public ResponseEntity<List<MedicalHistory>> showHistory() throws BloodException {
+        return new ResponseEntity<>(medicalHistoryService.findAll(), HttpStatus.OK);
     }
 
     /**
@@ -93,7 +90,8 @@ public class MedicalHistController {
      */
     @PreAuthorize("hasAuthority('Donor','Nurse')")
     @GetMapping("{historyId}")
-    public ResponseEntity<?> showByIdHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
+    public ResponseEntity<MedicalHistory> showByIdHistory(@PathVariable("historyId") Integer historyId)
+            throws BloodException {
         MedicalHistory history = medicalHistoryService.findById(historyId);
         return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
     }
@@ -106,7 +104,8 @@ public class MedicalHistController {
      */
     @PreAuthorize("hasAuthority('Donor','Nurse')")
     @GetMapping("findByDonor/{donorId}")
-    public ResponseEntity<?> findByDonorId(@PathVariable("donorId") Integer donorId) throws BloodException {
+    public ResponseEntity<MedicalHistory> findByDonorId(@PathVariable("donorId") Integer donorId)
+            throws BloodException {
         MedicalHistory history = medicalHistoryService.findByDonorId(donorId);
         return new ResponseEntity<MedicalHistory>(history, HttpStatus.OK);
     }
@@ -117,18 +116,14 @@ public class MedicalHistController {
      * @param historyId The unique identifier of the medical history to be deleted.
      * @return A response indicating the success or failure of the operation.
      */
-    /*
-     * @PreAuthorize("hasAuthority('Donor')")
-     * 
-     * @Transactional
-     * 
-     * @DeleteMapping("{historyId}")
-     * public ResponseEntity<?> deleteHistory(@PathVariable("historyId") Integer
-     * historyId) throws BloodException {
-     * medicalHistoryService.deleteHistory(historyId);
-     * return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
-     * }
-     */
+
+    @PreAuthorize("hasAuthority('Donor')")
+    @Transactional
+    @DeleteMapping("{historyId}")
+    public ResponseEntity<?> deleteHistory(@PathVariable("historyId") Integer historyId) throws BloodException {
+        medicalHistoryService.deleteHistory(historyId);
+        return new ResponseEntity<>("Deleted Successfully", HttpStatus.NO_CONTENT);
+    }
 
     /**
      * PATCH endpoint to update an existing medical history.
@@ -136,9 +131,10 @@ public class MedicalHistController {
      * @param history The updated medical history object.
      * @return A response indicating the success or failure of the operation.
      */
+    @PreAuthorize("hasAuthority('Donor')")
     @Transactional
     @PatchMapping("updateHistory")
-    public ResponseEntity<?> updateHistory(@RequestBody MedicalHistory history) throws BloodException {
+    public ResponseEntity<String> updateHistory(@RequestBody MedicalHistory history) throws BloodException {
         MedicalHistory existingHistory = medicalHistoryService.findById(history.getHistoryId());
         if (existingHistory != null) {
             existingHistory.setAllergies(history.getAllergies());

@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.strong.BloodDonation.Utils.BloodType;
 
@@ -60,4 +62,7 @@ public class Donor {
 
     @Column(nullable = true)
     private Date lastDonationDate;
+
+    @CreationTimestamp
+    private Date createdDate;
 }

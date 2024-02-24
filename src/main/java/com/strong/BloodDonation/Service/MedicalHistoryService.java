@@ -46,8 +46,12 @@ public class MedicalHistoryService {
             throw new BloodException("History Not Available With This Donor " + donorId + " ID");
     }
 
-    public List<MedicalHistory> findAll() {
-        return medicalHisRepo.findAll();
+    public List<MedicalHistory> findAll() throws BloodException {
+        List<MedicalHistory> all = medicalHisRepo.findAll();
+        if (!all.isEmpty()) {
+            return all;
+        } else
+            throw new BloodException("Medical History Empty");
     }
 
     public void deleteHistory(Integer historyId) throws BloodException {
