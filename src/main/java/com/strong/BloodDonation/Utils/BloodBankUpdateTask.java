@@ -41,7 +41,7 @@ public class BloodBankUpdateTask {
 
     Map<BloodType, Double> list = new HashMap<>();
 
-    @Scheduled(cron = "0 45 00 * * *")
+    @Scheduled(cron = "0 55 16 * * *")
     public void UpdateBank() throws BloodException {
         List<Donation> byDonationDate = donationRepo.findByDonationDate(LocalDate.now());
 

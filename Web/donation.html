@@ -38,7 +38,7 @@
             var form = event.target;
             var formData = new FormData(form);
 
-            fetch('http://localhost:8080/api/v1/Donation/createDonation?donorId=2', {
+            fetch('http://localhost:8080/api/v1/donation/createDonation?appointId=1', {
                 method: 'POST',
                 body: formData
             })
