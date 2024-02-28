@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appoint Donor</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background-color: gray; color: white;">
+    <div class="container mt-4 bg-dark-subtle
+    ">
+        <table class="table">
+            <thead id="Header">
+            </thead>
+            <tbody id="DataBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            const Header = document.getElementById("Header");
+            const DataBody = document.getElementById("DataBody");
+
+            const getAllAppointments = async () => {
+                try {
+                    const response = await fetch('http://localhost:8080/api/v1/appointment/doAppointDonor');
+                    const responseData = await response.json();
+
+                    if (response.ok) {
+                        console.log('Appointments:', responseData);
+                        const fieldNames = Object.keys(responseData[0]);
+
+                        // Populate table header with field names
+                        const headerRow = document.createElement('tr');
+                        fieldNames.forEach(fieldName => {
+                            const headerCell = document.createElement('th');
+                            headerCell.textContent = fieldName;
+                            headerRow.appendChild(headerCell);
+                        });
+                        Header.appendChild(headerRow);
+
+                        // Populate table body with data
+                        responseData.forEach(dataObject => {
+                            const dataRow = document.createElement('tr');
+                            fieldNames.forEach(fieldName => {
+                                const dataCell = document.createElement('td');
+                                dataCell.textContent = dataObject[fieldName];
+                                dataRow.appendChild(dataCell);
+                            });
+                            DataBody.appendChild(dataRow);
+                        });
+                    } else {
+                        console.error('Failed to fetch appointments');
+                    }
+                } catch (error) {
+                    console.error('An error occurred:', error);
+                }
+            };
+
+            // Call the function to fetch data when the page loads
+            getAllAppointments();
+        });
+    </script>
+
+</body>
+
+</html>
