@@ -19,7 +19,7 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-        server-id: com.strong # Match the repository ID in your pom.xml
+        server-id: com.strong
         settings-path: ${{ github.workspace }}
 
     - name: Build with Maven

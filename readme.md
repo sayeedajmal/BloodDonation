@@ -1,7 +1,7 @@
 # Blood Donation RestFul API With Email Notification Integration
 
 - Developed A Robust Restful API For Blood Donation Management.
-- Having Main & Security Branches
+- Having Main & Spring-Security Branches
 - Implemented Email Notification Interation
 - Implemented A Comprehensive System For Tracking Donor Information, Appointments, And Medical History.
 - Utilized Java And Relevant Frameworks To Build The API, Ensuring Scalability And Performance.
