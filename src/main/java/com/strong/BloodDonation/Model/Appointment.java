@@ -39,7 +39,6 @@ public class Appointment {
     @NotNull
     private LocalDate appointmentDate;
 
-    @NotNull
     @Check(constraints = "appointment_time >= '09:00:00' AND appointment_time <= '17:00:00'")
     private LocalTime appointmentTime;
 
