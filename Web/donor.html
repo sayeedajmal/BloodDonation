@@ -7,7 +7,7 @@
     <title>Donor Form</title>
 </head>
 
-<body>  
+<body>
     <h1 style="text-align: center;">Donor SignUp</h1>
     <form style="font-size: 2.5rem; text-align: center; align-items: center; align-content: center;">
         <input type="text" placeholder="firstName" id="firstName"><br>
@@ -43,11 +43,8 @@
             lastDonationDate: document.getElementById("lastDonationDate").value
         };
         var responseshow = document.getElementById("response");
-<<<<<<< HEAD
-=======
 
->>>>>>> 1618f13 (fixing some issues)
-        fetch('http://localhost:8080/api/v1/donor/createDonor', {
+        fetch('https://localhost:443/api/v1/donor/createDonor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -67,11 +64,6 @@
 
 
     }
-
-
-    fetch("http://localhost:8080/api/v1/donor/showDonor").then(response => response.json()).then(data => {
-        console.log(data);
-    }).catch(error => console.error('error: ', error));
 </script>
 
 </html>

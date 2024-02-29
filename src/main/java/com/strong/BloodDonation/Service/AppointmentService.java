@@ -27,14 +27,18 @@ public class AppointmentService {
     private DonorRepo donorRepo;
 
     public void saveAppointment(Appointment appointment) throws BloodException {
-        if (!isWithinBusinessHours(appointment.getAppointmentTime())) {
-            throw new BloodException("Appointment time must be within business hours.");
-        }
-        try {
-            appointRepo.save(appointment);
-        } catch (Exception e) {
-            throw new BloodException("Error saving appointment", e);
-        }
+        if (appointment.getAppointmentTime() != null && appointment.getAppointmentDate() != null) {
+
+            if (!isWithinBusinessHours(appointment.getAppointmentTime())) {
+                throw new BloodException("Appointment time must be within business hours.");
+            }
+            try {
+                appointRepo.save(appointment);
+            } catch (Exception e) {
+                throw new BloodException("Error saving appointment", e);
+            }
+        } else
+            throw new BloodException("Enter Correctly Your Date and Time");
     }
 
     public Appointment findById(@NonNull Integer id) throws BloodException {
