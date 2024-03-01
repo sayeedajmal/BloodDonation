@@ -1,43 +1,28 @@
 package com.strong.BloodDonation.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.strong.BloodDonation.Model.Staff;
 import com.strong.BloodDonation.Repository.StaffRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
 import lombok.NonNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Service
 public class StaffService {
 
     @Autowired
     private StaffRepo staffRepo;
-    Boolean Manager = true;
 
     public void createStaff(Staff staff) throws BloodException {
-        if (staff != null) {
-            if (Manager) {
-                staff.setEnabled(true);
-                staff.setPosition("MANAGER");
-                staff.setUpdatedAt(null);
-                staff.setCreatedAt(LocalDateTime.now());
-                staff.setPassword(staff.getPassword());
-                staffRepo.saveAndFlush(staff);
-                Manager = false;
-            } else {
-                staff.setPassword(staff.getPassword());
-                staff.setEnabled(false);
-                staff.setUpdatedAt(null);
-                staff.setCreatedAt(LocalDateTime.now());
-                staffRepo.saveAndFlush(staff);
-            }
-        } else
-            throw new BloodException("Fill Correct Form");
+        staff.setPassword(staff.getPassword());
+        staff.setEnabled(false);
+        staff.setUpdatedAt(null);
+        staffRepo.saveAndFlush(staff);
     }
 
     public Staff findById(@NonNull Integer staffId) throws BloodException {

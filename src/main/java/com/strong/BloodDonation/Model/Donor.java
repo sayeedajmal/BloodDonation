@@ -29,40 +29,39 @@ import lombok.Setter;
 @Setter
 public class Donor {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer donorId;
+   @Id
+   @GeneratedValue(strategy = GenerationType.AUTO)
+   private Integer donorId;
 
-    @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL)
-    @JsonBackReference
-    private List<MedicalHistory> medicalHistoryList = new ArrayList<>();
+   @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL)
+   @JsonBackReference
+   private List<MedicalHistory> medicalHistoryList = new ArrayList<>();
 
-    @Column(nullable = false)
-    private String firstName;
+   @Column(nullable = false)
+   private String firstName;
 
-    @Column(nullable = false)
-    private String lastName;
+   @Column(nullable = false)
+   private String lastName;
 
-    @Column(nullable = false)
-    private Date DOB;
+   @Column(nullable = false)
+   private Date DOB;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private BloodType BloodType;
+   @Enumerated(EnumType.STRING)
+   private BloodType BloodType;
 
-    @Column(nullable = false)
-    private String contactNumber;
+   @Column(nullable = false)
+   private String contactNumber;
 
-    @Column(nullable = false)
-    @Email
-    private String email;
+   @Column(nullable = false)
+   @Email
+   private String email;
 
-    @Column(nullable = false)
-    private String address;
+   @Column(nullable = false)
+   private String city;
 
-    @Column(nullable = true)
-    private Date lastDonationDate;
+   @Column(nullable = true)
+   private Date lastDonationDate;
 
-    @CreationTimestamp
-    private Date createdDate;
+   @CreationTimestamp
+   private Date createdDate;
 }
