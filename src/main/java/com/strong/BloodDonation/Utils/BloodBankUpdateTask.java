@@ -52,7 +52,6 @@ public class BloodBankUpdateTask {
             bloodBank.setAvailableBloodGroups(list);
             bloodBank.setBloodBankName(OrganisationName);
             bloodBank.setLocation(OrganisationLocation);
-            bloodBank.setDonationDate(LocalDate.now());
             bloodBank.setContactNumber(OrganisationPhone);
             bloodBank.setEmail(OrganisationEmail);
 
