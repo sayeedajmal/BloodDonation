@@ -1,4 +1,4 @@
-# Blood Donation RestFul API With Email Notification Integration
+# Blood Donation RestFul API With Email Integration
 
 - Developed A Robust Restful API For Blood Donation Management.
 - Having Main & Spring-Security Branches
