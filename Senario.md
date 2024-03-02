@@ -8,7 +8,7 @@ dateOfBirth: Date of birth of the donor.
 BloodType: Blood group of the donor (using a BloodType enum).
 contactNumber: Contact number of the donor.
 email: Email address of the donor.
-address: Address of the donor.
+city: city of the donor.
 lastDonationDate: Date of the donor's last blood donation.
 
 # Donation Entity:

@@ -110,7 +110,7 @@ public class DonorController {
             if (existingDonor != null) {
                 existingDonor.setFirstName(updatedDonor.getFirstName());
                 existingDonor.setLastName(updatedDonor.getLastName());
-                existingDonor.setAddress(updatedDonor.getAddress());
+                existingDonor.setCity(updatedDonor.getCity());
                 existingDonor.setBloodType(updatedDonor.getBloodType());
                 existingDonor.setContactNumber(updatedDonor.getContactNumber());
                 existingDonor.setDOB(updatedDonor.getDOB());

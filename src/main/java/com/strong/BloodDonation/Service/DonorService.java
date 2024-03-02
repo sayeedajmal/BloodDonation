@@ -1,8 +1,10 @@
 package com.strong.BloodDonation.Service;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.strong.BloodDonation.Model.Donor;
 import com.strong.BloodDonation.Repository.DonorRepo;
@@ -11,15 +13,13 @@ import com.strong.BloodDonation.Utils.BloodException;
 import lombok.NonNull;
 
 @Service
+@Validated
 public class DonorService {
 
     @Autowired
     private DonorRepo donorRepo;
 
     public void saveDonor(Donor donor) throws BloodException {
-        if (donor == null || donor.getFirstName() == null || donor.getLastName() == null) {
-            throw new BloodException("Fill All Fields Correctly");
-        }
         Integer existingDonorId = findByFullName(donor.getFirstName(), donor.getLastName());
         if (existingDonorId == null) {
             donorRepo.save(donor);

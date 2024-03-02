@@ -1,37 +1,32 @@
 package com.strong.BloodDonation.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.strong.BloodDonation.Model.Staff;
 import com.strong.BloodDonation.Repository.StaffRepo;
 import com.strong.BloodDonation.Utils.BloodException;
 
 import lombok.NonNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Service
 public class StaffService {
 
     @Autowired
     private StaffRepo staffRepo;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void createStaff(Staff staff) throws BloodException {
-        List<Staff> byEmail = staffRepo.findByEmail(staff.getEmail());
-        if (byEmail.isEmpty()) {
-            staff.setPosition(null);
-            staff.setPassword(passwordEncoder.encode(staff.getPassword()));
-            staff.setEnabled(false);
-            staff.setCreatedAt(LocalDateTime.now());
-            staffRepo.saveAndFlush(staff);
-        } else
-            throw new BloodException("Email Already Used");
-
+        staff.setPassword(passwordEncoder.encode(staff.getPassword()));
+        staff.setEnabled(false);
+        staff.setUpdatedAt(null);
+        staffRepo.save(staff);
     }
 
     public Staff findById(@NonNull Integer staffId) throws BloodException {

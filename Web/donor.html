@@ -13,10 +13,10 @@
         <input type="text" placeholder="firstName" id="firstName"><br>
         <input type="text" placeholder="lastName" id="lastName"><br>
         <input type="date" placeholder="dob" id="dob"><br>
-        <input type="text" placeholder="bloodType" id="bloodType"><br>
+        <input type="text" placeholder="bloodType" id="bloodType" required><br>
         <input type="text" placeholder="contactNumber" id="contactNumber"><br>
         <input type="email" placeholder="email" id="email"><br>
-        <input type="text" placeholder="address" id="address"><br>
+        <input type="text" placeholder="city" id="city"><br>
         <input type="date" placeholder="lastDonationDate" id="lastDonationDate"><br>
         <button type="button" onclick="submitForm()">Submit</button>
     </form>
@@ -39,10 +39,14 @@
             bloodType: document.getElementById("bloodType").value,
             contactNumber: document.getElementById("contactNumber").value,
             email: document.getElementById("email").value,
-            address: document.getElementById("address").value,
+            city: document.getElementById("city").value,
             lastDonationDate: document.getElementById("lastDonationDate").value
         };
         var responseshow = document.getElementById("response");
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1618f13 (fixing some issues)
         fetch('http://localhost:8080/api/v1/donor/createDonor', {
             method: 'POST',
             headers: {
@@ -58,7 +62,7 @@
                 }
             })
             .catch(error => {
-                responseshow.innerText = 'Error ' + error;
+                responseshow.innerText = error;
             });
 
 

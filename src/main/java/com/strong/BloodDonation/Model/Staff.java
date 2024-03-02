@@ -1,5 +1,6 @@
 package com.strong.BloodDonation.Model;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -46,8 +47,8 @@ public class Staff {
     private boolean enabled;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
