@@ -1,7 +1,6 @@
-package com.strong.BloodDonation.Security;
+/* package com.strong.BloodDonation.Security;
 
-import com.strong.BloodDonation.Model.Staff;
-import com.strong.BloodDonation.Repository.StaffRepo;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -15,10 +14,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import com.strong.BloodDonation.Model.Staff;
+import com.strong.BloodDonation.Repository.StaffRepo;
 
 @Service
-public class StaffAuthentication implements AuthenticationProvider {
+public class CustomAuthProvider implements AuthenticationProvider {
     @Autowired
     StaffRepo staffRepo;
     @Autowired
@@ -50,3 +50,4 @@ public class StaffAuthentication implements AuthenticationProvider {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
 }
+ */

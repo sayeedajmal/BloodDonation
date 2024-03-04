@@ -26,6 +26,7 @@ public class StaffService {
         staff.setPassword(passwordEncoder.encode(staff.getPassword()));
         staff.setEnabled(false);
         staff.setUpdatedAt(null);
+        staff.setPosition(null);
         staffRepo.save(staff);
     }
 

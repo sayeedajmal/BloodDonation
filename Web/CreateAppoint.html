@@ -42,7 +42,7 @@
         var form = event.target;
         var formData = new FormData(form);
 
-        fetch(`https://localhost:443/api/v1/appointment/createAppointment?donorId=${donorId}`, {
+        fetch(`https://localhost/api/v1/appointment/createAppointment?donorId=${donorId}`, {
             method: 'POST',
             body: formData
         })
