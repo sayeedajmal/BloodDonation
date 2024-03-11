@@ -30,6 +30,11 @@ public class StaffService {
         staffRepo.save(staff);
     }
 
+    public Staff findByEmail(String email) {
+        return staffRepo.findByEmail(email);
+
+    }
+
     public Staff findById(@NonNull Integer staffId) throws BloodException {
         Staff staff = staffRepo.findById(staffId).orElse(null);
         if (staff != null) {

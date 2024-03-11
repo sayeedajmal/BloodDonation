@@ -12,37 +12,71 @@ Includes(StaffAuthProvider)
 
 ## SCENEARIOS
 
-Break down the steps of the JWT authentication process using the provided classes (`JWTFilter`, `JWTTokenService`, and `JWTConfig`) step by step:
+wtUtils Class: This class contains methods for generating, validating, and extracting JWT tokens, as well as getting authentication from a JWT token.
 
-1. **JWTFilter**:
+JWTFilter Class: In the doFilterInternal method, it generates a JWT token based on the currently authenticated user (if any) and adds it to the response header. The shouldNotFilter method ensures that this filter is only applied to specific endpoints.
 
-   - Intercepts incoming HTTP requests.
-   - Parses the `Authorization` header of the request to extract the JWT token.
-   - Validates and extracts the payload from the JWT token.
-   - Sets up the authentication context using `SecurityContextHolder` with a `UsernamePasswordAuthenticationToken` containing the username, password (token), and authorities extracted from the token.
+JWTFilterValidator Class: This class validates JWT tokens extracted from incoming requests. If a valid token is found, it retrieves authentication details from the token and sets them in the security context.
 
-2. **JWTAuthProvider**:
+AuthController Class: This controller handles the authentication endpoint (/api/authenticate). It authenticates users based on their email and password, generates a JWT token using JwtUtils, and returns it in the response.
 
-   Primary role: Implements Spring Security's AuthenticationProvider interface.
+    # HOW SECURITY WORKS
 
-   Functionality:
+    - Filter Chain Initialization:
 
-   - Authenticates users based on the provided credentials (in this case, the JWT token).
-   - Trusts the JWTFilter to pre-validate the token.
-   - Retrieves user information (if not already done by the filter) based on the extracted user ID.
-   - Creates a UsernamePasswordAuthenticationToken object with the user's information and granted authorities for Spring Security's internal use.
+    When your Spring application starts up, Spring Security initializes a chain of servlet filters known as the "Filter Chain".
+    The Filter Chain intercepts incoming HTTP requests and processes them according to the security rules configured in your application.
 
-3. **JWTTokenService**:
-   - Generates a JWT token based on the provided user information.
-   - Utilizes the secret key obtained from `JWTConfig` to sign the token.
-   - Specifies token expiration and other claims, such as the user's authorities, in the token payload.
+    - Request Processing:
 
-Here's the step-by-step flow of the JWT authentication process based on the explanation:
+    When a request is received by your application, it passes through the Filter Chain.
+    Each filter in the chain performs specific tasks related to security, such as authentication, authorization, CSRF protection, etc.
 
-1. The client sends an HTTP request with the JWT token in the `Authorization` header.
-2. The `JWTFilter` intercepts the request and extracts the JWT token.
-3. The `JWTTokenService` is responsible for token validation and user authentication based on the token.
-4. The `JWTTokenService` utilizes the secret key from `JWTConfig` to validate the token's signature and extract user information.
-5. If the token is valid, the `JWTFilter` sets up the authentication context using `SecurityContextHolder`, allowing the user to access protected resources.
+    - Filter Order:
 
-This process ensures that only authenticated and authorized users can access the application's resources using JWT tokens. Each class plays a specific role in the authentication flow, contributing to the overall security of the application.
+    Filters are executed in a specific order defined by Spring Security.
+    The most important filters typically come first in the chain, such as the SecurityContextPersistenceFilter, which loads the SecurityContext for the current request.
+
+    - Security Context:
+
+    The SecurityContext holds the authentication information for the current request.
+    It contains details about the authenticated user, such as their principal (username), authorities (roles), and any additional details.
+
+    - Authentication:
+
+    If a request requires authentication (e.g., accessing a protected resource), Spring Security triggers the authentication process.
+    This process involves determining the authentication mechanism to use (e.g., form-based login, HTTP Basic authentication, OAuth), validating credentials, and loading the user's details.
+
+    - Authentication Providers:
+
+    Authentication is typically handled by one or more AuthenticationProvider implementations.
+    Each AuthenticationProvider is responsible for validating credentials and returning an Authentication object representing the authenticated user.
+
+    - Authentication Manager:
+
+    The AuthenticationManager orchestrates the authentication process by delegating to the appropriate AuthenticationProvider.
+    It iterates over the available providers until one is able to successfully authenticate the user, or until authentication fails.
+
+    - Successful Authentication:
+
+    If authentication is successful, an Authentication object is created and stored in the SecurityContext.
+    The request is then allowed to proceed to the next filters or the target controller method.
+
+    - Authorization:
+
+    After authentication, Spring Security performs authorization checks to determine if the authenticated user is allowed to access the requested resource.
+    Authorization rules are typically configured using method security annotations (@PreAuthorize, @Secured), URL-based security configurations, or custom AccessDecisionManager implementations.
+
+    - Access Decision:
+
+    The AccessDecisionManager evaluates the authorization rules and decides whether to grant or deny access to the resource.
+    It considers factors such as the user's roles, permissions, and any additional access control rules configured in the application.
+
+    - Security Exceptions:
+
+    If authentication or authorization fails, Spring Security may throw security-related exceptions, such as AuthenticationException, AccessDeniedException, etc.
+    These exceptions can be handled using exception handling mechanisms provided by Spring Security, such as AuthenticationEntryPoint, AccessDeniedHandler, etc.
+
+    - Response Processing:
+
+    Once the request has been processed by the Filter Chain and any security checks have been performed, the response is returned to the client.

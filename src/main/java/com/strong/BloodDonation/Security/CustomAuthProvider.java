@@ -1,4 +1,4 @@
-/* package com.strong.BloodDonation.Security;
+package com.strong.BloodDonation.Security;
 
 import java.util.Collections;
 
@@ -50,4 +50,3 @@ public class CustomAuthProvider implements AuthenticationProvider {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
 }
- */
