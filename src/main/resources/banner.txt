@@ -7,4 +7,5 @@ ______ _                 _______                  _   _
                                                                     
                                                                     
 ${application.title} ${application.version}
-Powered by Spring Boot ${spring-boot.version}
+Powered By Spring Boot ${spring-boot.version}
+Secured By Spring Security ${spring-security.version}
