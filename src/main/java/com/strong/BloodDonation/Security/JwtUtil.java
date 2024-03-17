@@ -1,6 +1,5 @@
 package com.strong.BloodDonation.Security;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -14,7 +13,10 @@ import org.springframework.stereotype.Component;
 
 import com.strong.BloodDonation.Model.Staff;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -46,6 +48,10 @@ public class JwtUtil {
                 .get("email", String.class);
     }
 
+    public Claims getClaim(String token) {
+        return Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token).getPayload();
+    }
+
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(authToken);
@@ -61,12 +67,13 @@ public class JwtUtil {
         System.out.println("Authorization Header: " + authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7);
-        }
-        return null;
+        } else
+            throw new JwtException("Authorization Header is Empty");
     }
 
     private SecretKey getSecretKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = Decoders.BASE64URL.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public Collection<? extends GrantedAuthority> getAuthorityList(Staff staff) {
@@ -74,4 +81,5 @@ public class JwtUtil {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);
         return Collections.singletonList(grantedAuthority);
     }
+
 }

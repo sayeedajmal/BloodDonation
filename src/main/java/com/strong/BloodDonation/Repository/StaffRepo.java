@@ -8,7 +8,7 @@ import com.strong.BloodDonation.Model.Staff;
 
 public interface StaffRepo extends JpaRepository<Staff, Integer> {
 
-    Staff findByStaffName(String staffName);
+    Optional<Staff> findByStaffName(String staffName);
 
     Optional<Staff> findByEmail(String email);
 }
