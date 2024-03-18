@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.strong.BloodDonation.Email.MailService;
+import com.strong.BloodDonation.Model.LoginRequest;
 import com.strong.BloodDonation.Model.Staff;
+import com.strong.BloodDonation.Security.JwtUtil;
 import com.strong.BloodDonation.Service.StaffService;
 import com.strong.BloodDonation.Utils.BloodException;
 
@@ -38,6 +41,17 @@ public class StaffController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtil jwtUtil;
+
+    @PostMapping("/auth")
+    public String jwtToken(@RequestBody LoginRequest loginRequest) {
+        return jwtUtil.generateJwtToken(loginRequest.getEmail(), loginRequest.getPassword());
+    }
 
     /**
      * POST endpoint to create a new staff member.

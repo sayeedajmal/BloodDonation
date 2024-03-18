@@ -1,13 +1,15 @@
 package com.strong.BloodDonation.Model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
 
-    private String Email;
-    private String Password;
+    private String email;
+    private String password;
 
 }

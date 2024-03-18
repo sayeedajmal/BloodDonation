@@ -27,7 +27,6 @@ public class JwtUtil {
     private String secretKey;
 
     public String generateJwtToken(String email, String position) {
-        System.out.println("TOken by JWTUITLS: " + secretKey);
         return Jwts.builder()
                 .issuer("BloodDonation")
                 .subject("JWTToken")
@@ -64,7 +63,6 @@ public class JwtUtil {
 
     public String extractJwtToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Authorization Header: " + authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7);
         } else

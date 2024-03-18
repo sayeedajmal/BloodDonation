@@ -2,14 +2,9 @@ package com.strong.BloodDonation.Model;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class Staff implements UserDetails {
+public class Staff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -57,30 +52,4 @@ public class Staff implements UserDetails {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(position));
-    }
-
-    @Override
-    public String getUsername() {
-        return staffName;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
 }

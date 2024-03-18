@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,7 @@ import com.strong.BloodDonation.Utils.BloodException;
 import lombok.NonNull;
 
 @Service
-public class StaffService implements UserDetailsService {
+public class StaffService {
 
     @Autowired
     private StaffRepo staffRepo;
@@ -75,11 +73,5 @@ public class StaffService implements UserDetailsService {
             existingStaff.setUpdatedAt(LocalDateTime.now());
         } else
             throw new BloodException("can't find Donor By this Id: ");
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return staffRepo.findByStaffName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("UserName Not Found " + username));
     }
 }
